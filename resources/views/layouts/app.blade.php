@@ -46,14 +46,14 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         @guest
-                            <!-- Link untuk Login sebagai Admin -->
+                            {{-- <!-- Link untuk Login sebagai Admin -->
                             <li class="nav-item bg-primary rounded mx-1">
                                 <a class="nav-link text-light" href="{{ route('login') }}">{{ __('Login sebagai Admin') }}</a>
                             </li>
                             <!-- Link untuk Login sebagai User -->
                             <li class="nav-item bg-success rounded">
                                 <a class="nav-link text-light" href="{{ route('login.google') }}">{{ __('Login sebagai User') }}</a>
-                            </li>
+                            </li> --}}
                         @else
                         <li class="nav-item bg-primary rounded">
                                 <a id="nav-link" class="nav-link text-light" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
