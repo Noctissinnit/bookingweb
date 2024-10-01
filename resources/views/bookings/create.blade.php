@@ -193,14 +193,10 @@
                     </div>
                     <div class="form-group">
                         <label>Invitation</label>
-                        <select class="select2" multiple="" data-placeholder="Select a State" style="width: 100%;">
-                            <option>Alabama</option>
-                            <option>Alaska</option>
-                            <option>California</option>
-                            <option>Delaware</option>
-                            <option>Tennessee</option>
-                            <option>Texas</option>
-                            <option>Washington</option>
+                        <select class="select2" name="states[]" multiple="" data-placeholder="Select a State" style="width: 100%;">
+                            <option value="Alabama">Alabama</option>
+                            <option value="Alaska">Alaska</option>
+                            <option value="California">California</option>
                         </select>
                     </div>
                 </div>
@@ -238,7 +234,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     calendar.render();
 
-    $('.select2').select2();
+    $('.select2').select2({
+        dropdownParent: $('#bookingModal')
+    });
 });
 
 function updateDateTime() {
