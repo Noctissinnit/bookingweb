@@ -1,16 +1,18 @@
 <?php
+
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\GoogleController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 // Route untuk halaman utama 
 Route::get('/', function () {
     return redirect()->route('bookings.create');
-   
 });
 
 Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
+Route::get('/bookings/login', [BookingController::class, 'login'])->name('bookings.login');
 Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
 
 // Route untuk authentication (login/register)

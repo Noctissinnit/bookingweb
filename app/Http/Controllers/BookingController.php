@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Mail\BookingApprovedMail;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Spatie\GoogleCalendar\Event;
 use Carbon\Carbon;
+
 class BookingController extends Controller
 {
     // Hanya menampilkan form booking untuk user biasa
@@ -18,10 +20,25 @@ class BookingController extends Controller
         return view('bookings.create', compact('rooms'));
     }
 
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
+    }
+
     // Menyimpan booking baru
     public function store(Request $request)
     {
-        
+
         $request->validate([
             'room_id' => 'required',
             'date' => 'required|date',
@@ -64,70 +81,67 @@ class BookingController extends Controller
 
     // Proses approve booking oleh admin
     public function approve($id)
-{
-    if (Auth::user()->role !== 'admin') {
-        return redirect()->route('home')->with('error', 'Unauthorized access');
-    }
-
-    $booking = Booking::find($id);
-    if ($booking) {
-        $booking->approved = true;
-        $booking->save();
-
-        // Kurangi 7 jam dari waktu mulai dan selesai
-        $startDateTime = Carbon::parse($booking->date . ' ' . $booking->start_time)->subHours(7);
-        $endDateTime = Carbon::parse($booking->date . ' ' . $booking->end_time)->subHours(7);
-
-        // Buat event di sistem Anda (misal dengan Spatie Google Calendar)
-        // $event = new Event;
-        // $event->name = 'Meeting Room Booking: ' . $booking->room->name;
-        // $event->startDateTime = $startDateTime;
-        // $event->endDateTime = $endDateTime;
-        // $event->description = $booking->description;
-        // $event->save();
-
-        // Kirim email notifikasi setelah approve
-        Mail::to($booking->user->email)->send(new BookingApprovedMail($booking));
-
-        // Ambil token OAuth dari session
-        $accessToken = session('google_access_token');
-
-        // Jika token tidak ada, arahkan pengguna untuk login ulang dengan Google
-        if (!$accessToken) {
-            return redirect()->route('login.google')->with('error', 'Please login with Google to sync your calendar.');
+    {
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('home')->with('error', 'Unauthorized access');
         }
 
-        // Inisialisasi Google Client dengan token
-        $client = new \Google_Client();
-        $client->setAccessToken($accessToken);
+        $booking = Booking::find($id);
+        if ($booking) {
+            $booking->approved = true;
+            $booking->save();
 
-        $service = new \Google_Service_Calendar($client);
+            // Kurangi 7 jam dari waktu mulai dan selesai
+            $startDateTime = Carbon::parse($booking->date . ' ' . $booking->start_time)->subHours(7);
+            $endDateTime = Carbon::parse($booking->date . ' ' . $booking->end_time)->subHours(7);
 
-        // Membuat event untuk disimpan di kalender pengguna
-        $googleEvent = new \Google_Service_Calendar_Event([
-            'summary' => 'Meeting Room Booking: ' . $booking->room->name,
-            'start' => [
-                'dateTime' => $startDateTime->toRfc3339String(),  // Gunakan waktu yang sudah dikurangi 7 jam
-                'timeZone' => 'Asia/Jakarta',
-            ],
-            'end' => [
-                'dateTime' => $endDateTime->toRfc3339String(),  // Gunakan waktu yang sudah dikurangi 7 jam
-                'timeZone' => 'Asia/Jakarta',
-            ],
-            'attendees' => [
-                ['email' => $booking->user->email],  // email pengguna yang diundang
-            ],
-        ]);
+            // Buat event di sistem Anda (misal dengan Spatie Google Calendar)
+            // $event = new Event;
+            // $event->name = 'Meeting Room Booking: ' . $booking->room->name;
+            // $event->startDateTime = $startDateTime;
+            // $event->endDateTime = $endDateTime;
+            // $event->description = $booking->description;
+            // $event->save();
 
-        // Simpan event ke kalender utama pengguna
-        $service->events->insert('primary', $googleEvent);
+            // Kirim email notifikasi setelah approve
+            Mail::to($booking->user->email)->send(new BookingApprovedMail($booking));
 
-        return redirect()->route('admin.bookings.index')->with('success', 'Booking approved and event created in Google Calendar.');
+            // Ambil token OAuth dari session
+            $accessToken = session('google_access_token');
+
+            // Jika token tidak ada, arahkan pengguna untuk login ulang dengan Google
+            if (!$accessToken) {
+                return redirect()->route('login.google')->with('error', 'Please login with Google to sync your calendar.');
+            }
+
+            // Inisialisasi Google Client dengan token
+            $client = new \Google_Client();
+            $client->setAccessToken($accessToken);
+
+            $service = new \Google_Service_Calendar($client);
+
+            // Membuat event untuk disimpan di kalender pengguna
+            $googleEvent = new \Google_Service_Calendar_Event([
+                'summary' => 'Meeting Room Booking: ' . $booking->room->name,
+                'start' => [
+                    'dateTime' => $startDateTime->toRfc3339String(),  // Gunakan waktu yang sudah dikurangi 7 jam
+                    'timeZone' => 'Asia/Jakarta',
+                ],
+                'end' => [
+                    'dateTime' => $endDateTime->toRfc3339String(),  // Gunakan waktu yang sudah dikurangi 7 jam
+                    'timeZone' => 'Asia/Jakarta',
+                ],
+                'attendees' => [
+                    ['email' => $booking->user->email],  // email pengguna yang diundang
+                ],
+            ]);
+
+            // Simpan event ke kalender utama pengguna
+            $service->events->insert('primary', $googleEvent);
+
+            return redirect()->route('admin.bookings.index')->with('success', 'Booking approved and event created in Google Calendar.');
+        }
+
+        return redirect()->route('admin.bookings.index')->with('error', 'Booking not found.');
     }
-
-    return redirect()->route('admin.bookings.index')->with('error', 'Booking not found.');
-}
-
-
-    
 }

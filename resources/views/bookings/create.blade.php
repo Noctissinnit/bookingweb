@@ -3,6 +3,88 @@
 @section('content')
 
 <style>
+
+body {
+        background-color: #f8f9fa;
+    }
+    .container {
+        max-width: 1200px; /* Lebar maksimal kontainer */
+    }
+    .calendar {
+        max-width: 400px; /* Maksimum lebar kalender */
+        margin: 0 auto; /* Agar kalender berada di tengah */
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #ffffff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .day {
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        position: relative;
+        transition: background-color 0.3s;
+    }
+    .day-header {
+        background-color: #f1f1f1;
+        font-weight: bold;
+    }
+    .day:hover {
+        background-color: #e9ecef;
+    }
+    .booked {
+        background-color: #f8d7da;
+    }
+    .dashboard {
+        margin: 0 auto; /* Agar dashboard berada di tengah */
+        max-width: 400px; /* Maksimum lebar dashboard */
+    }
+    .dashboard-item {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+    .delete-btn {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        padding: 5px 10px;
+        font-size: 0.875rem;
+    }
+    .delete-btn:hover {
+        background-color: #c82333;
+    }
+    .room-status {
+        font-weight: bold;
+    }
+    .modal-header {
+        background-color: #007bff;
+        color: white;
+    }
+    .modal-footer {
+        border-top: none;
+    }
+    h2, h4 {
+        color: #007bff;
+    }
+    #real-time {
+        font-size: 1.2rem;
+        color: #343a40;
+        text-align: center; /* Tengah */
+    }
     /* Style untuk membungkus kalender */
     #calendar {
         max-width: 80%;
@@ -113,13 +195,26 @@
         <!-- Bagian Kiri: Input Biodata -->
         <div class="col-md-5">
             <div class="room-status" id="room-status">
-                <h1>Peminjaman Ruang Meeting</h1>
+                <!-- <h1>Peminjaman Ruang Meeting</h1>
                 <div id="current-date"></div>
                 <div id="current-time"></div>
                 <div id="room-name">Room A</div>
                 <div id="room-name">Room B</div>
                 <div id="room-name">Room C</div>
-                <div id="bookings"></div>
+                <div id="bookings"></div> -->
+
+                <!-- Real-Time Clock -->
+                <h5 id="current-date" class="mb-4"></h5>
+                <h5 id="current-time" class="mb-4"></h5>
+
+                <!-- Dashboard -->
+                <div class="dashboard">
+                    <h2>Dashboard Peminjaman Ruangan</h2>
+                    <h4>Ruangan yang Tersedia</h4>
+                    <div id="availableRoomsList" class="mb-3"></div>
+                    <h4>Peminjaman Saat Ini</h4>
+                    <div id="dashboardItems"></div>
+                </div>
 
                 <!-- Input untuk menambah peminjaman -->
                 {{-- <h3>Tambah Peminjaman</h3>
@@ -134,6 +229,31 @@
         <!-- Bagian Kanan: Kalender -->
         <div class="col-md-7">
             <div id="calendar" class="shadow-sm rounded" style="background-color: #f8f9fa;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Login -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -216,6 +336,14 @@
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@4.4.2/main.min.js"></script>
 
 <script>
+let isLoggedIn = false; // Awalnya pengguna belum login
+let bookings = {};
+
+const loginUrl = "{{ route('bookings.login') }}";
+
+// Daftar ruangan
+const availableRooms = ['Ruang A', 'Ruang B', 'Ruang C'];
+
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -228,8 +356,21 @@ document.addEventListener('DOMContentLoaded', function() {
         initialView: 'dayGridMonth',
         dateClick: function(info) {
             // Tampilkan modal saat user klik tanggal di kalender
-            $('#selectedDate').val(info.dateStr);
-            $('#bookingModal').modal('show');
+            // $('#bookingModal').modal('show');
+            if (isLoggedIn) {
+                // selectedDateBooking.value = dateString; // Set tanggal yang dipilih
+                $('#selectedDate').val(info.dateStr);
+                const bookingDetails = bookings[dateString];
+                if (bookingDetails) {
+                    alert(`Ruangan sudah dipinjam:\nRuang: ${bookingDetails.room}\nMulai: ${bookingDetails.startTime}\nAkhir: ${bookingDetails.endTime}\nPeserta: ${bookingDetails.participants}\nDeskripsi: ${bookingDetails.description}`);
+                } else {
+                    const bookingModal = new bootstrap.Modal(document.getElementById('bookingModal'));
+                    bookingModal.show();
+                }
+            } else {
+                const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                loginModal.show();
+            }
         }
     });
     calendar.render();
@@ -237,154 +378,247 @@ document.addEventListener('DOMContentLoaded', function() {
     $('.select2').select2({
         dropdownParent: $('#bookingModal')
     });
+
+    $('#loginForm').submit(async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // const user = registeredUsers.find(user => user.username === username && user.password === password);
+        const response = await $.get(loginUrl, { email, password });
+        if (response.success) {
+            isLoggedIn = true; // Set login status
+            alert('Login Berhasil!');
+            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+            loginModal.hide();
+            const bookingModal = new bootstrap.Modal(document.getElementById('bookingModal'));
+            bookingModal.show(); // Tampilkan modal peminjaman setelah login
+        } else {
+            alert('Username atau Password salah!');
+        }
+    });
+
+    $('#bookingForm').submit((e) => {
+        e.preventDefault();
+        const room = document.getElementById('roomSelect').value;
+        const startTime = document.getElementById('startTime').value;
+        const endTime = document.getElementById('endTime').value;
+        const participants = document.getElementById('participants').value;
+        const description = document.getElementById('description').value;
+        const bookingDate = selectedDateBooking.value;
+
+        // Simpan peminjaman
+        bookings[bookingDate] = { room, startTime, endTime, participants, description };
+        updateDashboard();
+
+        // Setelah menyimpan, logout otomatis
+        isLoggedIn = false; // Set login status ke false
+        const bookingModal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
+        bookingModal.hide();
+        alert('Peminjaman Ruangan berhasil disimpan!');
+
+        // Reset form
+        $('#bookingForm').reset();
+    });
+
+
+    // Check for expired bookings
+    setInterval(() => {
+        const now = new Date();
+        for (const [date, details] of Object.entries(bookings)) {
+            const endDateTime = new Date(`${date}T${details.endTime}`);
+            if (now >= endDateTime) {
+                delete bookings[date]; // Hapus peminjaman yang sudah berakhir
+                updateDashboard(); // Update dashboard
+            }
+        }
+    }, 60000); // Cek setiap 60 detik
+
+    updateDashboard();
 });
 
 function updateDateTime() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = now.toLocaleDateString('id-ID', options);
-            const formattedTime = now.toLocaleTimeString('id-ID');
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = now.toLocaleDateString('id-ID', options);
+    const formattedTime = now.toLocaleTimeString('id-ID');
 
-            document.getElementById('current-date').innerText = formattedDate;
-            document.getElementById('current-time').innerText = formattedTime;
+    // document.getElementById('current-date').innerText = formattedDate;
+    document.getElementById('current-time').innerText = formattedTime;
+}
+
+// Update Dashboard
+function updateDashboard() {
+    $('#dashboardItems').innerHTML = '';
+    const availableRoomsStatus = {};
+
+    // Set semua ruangan sebagai tersedia
+    for (const room of availableRooms) {
+        availableRoomsStatus[room] = "Tersedia"; // Set status awal
+    }
+
+    for (const [date, details] of Object.entries(bookings)) {
+        const item = document.createElement('div');
+        item.classList.add('dashboard-item');
+        item.innerHTML = `
+            <strong>Tanggal: ${date}</strong><br>
+            Ruang: ${details.room}<br>
+            Mulai: ${details.startTime}<br>
+            Akhir: ${details.endTime}<br>
+            Peserta: ${details.participants}<br>
+            Deskripsi: ${details.description}
+            <button class="delete-btn" onclick="deleteBooking('${date}')">Hapus</button>
+        `;
+        dashboardItems.appendChild(item);
+
+        // Ubah status ruangan menjadi tidak tersedia
+        availableRoomsStatus[details.room] = "Tidak Tersedia";
+    }
+
+    // Menampilkan status ruangan
+    $('#availableRoomsList').innerHTML = "Ruangan yang Tersedia:<br>";
+    for (const [room, status] of Object.entries(availableRoomsStatus)) {
+        $('#availableRoomsList').innerHTML += `${room}: <span class="room-status">${status}</span><br>`;
+    }
+}
+
+function updateRoomStatus() {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentTotalMinutes = currentHour * 60 + currentMinute;
+
+    let isAvailable = true;
+
+    bookingsData.forEach(booking => {
+        const [startHour, startMinute] = booking.start.split(':').map(Number);
+        const [endHour, endMinute] = booking.end.split(':').map(Number);
+
+        const startTotalMinutes = startHour * 60 + startMinute;
+        const endTotalMinutes = endHour * 60 + endMinute;
+
+        if (currentTotalMinutes >= startTotalMinutes && currentTotalMinutes < endTotalMinutes) {
+            isAvailable = false;
         }
+    });
 
-        const bookingsData = [
-            { start: '16:49', end: '16:50', name: 'Tim C' },
-        ];
+    // const status = isAvailable ? "Tersedia" : "Tidak Tersedia";
+    document.getElementById('room-name').innerText = `Ruang 101 - Status: ${status}`;
 
-        function updateRoomStatus() {
-            const now = new Date();
-            const currentHour = now.getHours();
-            const currentMinute = now.getMinutes();
-            const currentTotalMinutes = currentHour * 60 + currentMinute;
+    const bookingsDiv = document.getElementById('bookings');
+    bookingsDiv.innerHTML = '<h3>Jam Penggunaan Hari Ini:</h3>';
 
-            let isAvailable = true;
+    if (bookingsData.length === 0) {
+        bookingsDiv.innerHTML += '<p>Ruang tersedia hari ini.</p>';
+    } else {
+        bookingsData.forEach((booking, index) => {
+            const bookingInfo = document.createElement('div');
+            const [startHour, startMinute] = booking.start.split(':').map(Number);
+            const [endHour, endMinute] = booking.end.split(':').map(Number);
+            const startTotalMinutes = startHour * 60 + startMinute;
+            const endTotalMinutes = endHour * 60 + endMinute;
 
-            bookingsData.forEach(booking => {
-                const [startHour, startMinute] = booking.start.split(':').map(Number);
-                const [endHour, endMinute] = booking.end.split(':').map(Number);
-
-                const startTotalMinutes = startHour * 60 + startMinute;
-                const endTotalMinutes = endHour * 60 + endMinute;
-
-                if (currentTotalMinutes >= startTotalMinutes && currentTotalMinutes < endTotalMinutes) {
-                    isAvailable = false;
-                }
-            });
-
-            const status = isAvailable ? "Tersedia" : "Tidak Tersedia";
-            document.getElementById('room-name').innerText = `Ruang 101 - Status: ${status}`;
-
-            const bookingsDiv = document.getElementById('bookings');
-            bookingsDiv.innerHTML = '<h3>Jam Penggunaan Hari Ini:</h3>';
-
-            if (bookingsData.length === 0) {
-                bookingsDiv.innerHTML += '<p>Ruang tersedia hari ini.</p>';
-            } else {
-                bookingsData.forEach((booking, index) => {
-                    const bookingInfo = document.createElement('div');
-                    const [startHour, startMinute] = booking.start.split(':').map(Number);
-                    const [endHour, endMinute] = booking.end.split(':').map(Number);
-                    const startTotalMinutes = startHour * 60 + startMinute;
-                    const endTotalMinutes = endHour * 60 + endMinute;
-
-                    if (currentTotalMinutes >= startTotalMinutes && currentTotalMinutes < endTotalMinutes) {
-                        bookingInfo.style.backgroundColor = '#87CEFA';
-                    }
-
-                    bookingInfo.innerText = `Dipinjam oleh ${booking.name} dari ${booking.start} hingga ${booking.end}`;
-
-                    const deleteButton = document.createElement('button');
-                    deleteButton.innerText = 'Hapus';
-                    deleteButton.onclick = () => deleteBooking(index);
-                    bookingInfo.appendChild(deleteButton);
-
-                    bookingsDiv.appendChild(bookingInfo);
-                });
-            }
-        }
-
-        function deleteBooking(index) {
-            bookingsData.splice(index, 1); // Hapus peminjaman dari array
-            updateRoomStatus(); // Memperbarui status setelah menghapus peminjaman
-        }
-
-        function addBooking() {
-            const name = document.getElementById('booking-name').value;
-            const start = document.getElementById('booking-start').value;
-            const end = document.getElementById('booking-end').value;
-
-            if (name && start && end) {
-                bookingsData.push({ start, end, name });
-                updateRoomStatus();
-                document.getElementById('booking-name').value = '';
-                document.getElementById('booking-start').value = '';
-                document.getElementById('booking-end').value = '';
-            } else {
-                alert('Silakan isi semua kolom!');
-            }
-        }
-
-        function generateCalendar() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth();
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const lastDate = new Date(year, month + 1, 0).getDate();
-
-            const calendarDiv = document.getElementById('calendar');
-            calendarDiv.innerHTML = '';
-
-            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-
-            const table = document.createElement('table');
-            const headerRow = document.createElement('tr');
-
-            dayNames.forEach(day => {
-                const th = document.createElement('th');
-                th.innerText = day;
-                headerRow.appendChild(th);
-            });
-
-            table.appendChild(headerRow);
-
-            let dateRow = document.createElement('tr');
-
-            for (let i = 0; i < firstDay; i++) {
-                const emptyCell = document.createElement('td');
-                dateRow.appendChild(emptyCell);
+            if (currentTotalMinutes >= startTotalMinutes && currentTotalMinutes < endTotalMinutes) {
+                bookingInfo.style.backgroundColor = '#87CEFA';
             }
 
-            for (let date = 1; date <= lastDate; date++) {
-                const dateCell = document.createElement('td');
-                dateCell.innerText = date;
+            bookingInfo.innerText = `Dipinjam oleh ${booking.name} dari ${booking.start} hingga ${booking.end}`;
 
-                if (date === now.getDate()) {
-                    dateCell.classList.add('today');
-                }
+            const deleteButton = document.createElement('button');
+            deleteButton.innerText = 'Hapus';
+            deleteButton.onclick = () => deleteBooking(index);
+            bookingInfo.appendChild(deleteButton);
 
-                dateRow.appendChild(dateCell);
+            bookingsDiv.appendChild(bookingInfo);
+        });
+    }
+}
 
-                if ((date + firstDay) % 7 === 0) {
-                    table.appendChild(dateRow);
-                    dateRow = document.createElement('tr');
-                }
-            }
+/*function deleteBooking(index) {
+    bookingsData.splice(index, 1); // Hapus peminjaman dari array
+    updateRoomStatus(); // Memperbarui status setelah menghapus peminjaman
+}*/
+function deleteBooking(date) {
+    delete bookings[date];
+    updateDashboard();
+    alert(`Peminjaman pada tanggal ${date} telah dihapus.`);
+}
 
-            if (dateRow.children.length > 0) {
-                table.appendChild(dateRow);
-            }
+/*function addBooking() {
+    const name = document.getElementById('booking-name').value;
+    const start = document.getElementById('booking-start').value;
+    const end = document.getElementById('booking-end').value;
 
-            calendarDiv.appendChild(table);
+    if (name && start && end) {
+        bookingsData.push({ start, end, name });
+        updateRoomStatus();
+        document.getElementById('booking-name').value = '';
+        document.getElementById('booking-start').value = '';
+        document.getElementById('booking-end').value = '';
+    } else {
+        alert('Silakan isi semua kolom!');
+    }
+}*/
+
+function generateCalendar() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+
+    const calendarDiv = document.getElementById('calendar');
+    calendarDiv.innerHTML = '';
+
+    const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+
+    const table = document.createElement('table');
+    const headerRow = document.createElement('tr');
+
+    dayNames.forEach(day => {
+        const th = document.createElement('th');
+        th.innerText = day;
+        headerRow.appendChild(th);
+    });
+
+    table.appendChild(headerRow);
+
+    let dateRow = document.createElement('tr');
+
+    for (let i = 0; i < firstDay; i++) {
+        const emptyCell = document.createElement('td');
+        dateRow.appendChild(emptyCell);
+    }
+
+    for (let date = 1; date <= lastDate; date++) {
+        const dateCell = document.createElement('td');
+        dateCell.innerText = date;
+
+        if (date === now.getDate()) {
+            dateCell.classList.add('today');
         }
 
-        setInterval(() => {
-            updateDateTime();
-            updateRoomStatus();
-        }, 1000);
+        dateRow.appendChild(dateCell);
 
-        generateCalendar();
+        if ((date + firstDay) % 7 === 0) {
+            table.appendChild(dateRow);
+            dateRow = document.createElement('tr');
+        }
+    }
+
+    if (dateRow.children.length > 0) {
+        table.appendChild(dateRow);
+    }
+
+    calendarDiv.appendChild(table);
+}
+
+generateCalendar();
+
+/*setInterval(() => {
+    updateDateTime();
+    // updateRoomStatus();
+}, 1000);*/
 </script>
