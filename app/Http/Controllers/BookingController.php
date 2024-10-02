@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Spatie\GoogleCalendar\Event;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
@@ -38,7 +39,7 @@ class BookingController extends Controller
     // Menyimpan booking baru
     public function store(Request $request)
     {
-
+        Log::debug(Auth::user());
         $request->validate([
             'room_id' => 'required',
             'date' => 'required|date',
@@ -65,7 +66,11 @@ class BookingController extends Controller
             'approved' => false, // Menunggu approval
         ]);
 
-        return redirect()->route('home')->with('success', 'Booking submitted, waiting for admin approval.');
+        // Logout setelah menambahkan data
+        Auth::logout();
+        return response()->json(['success' => true]);
+
+        // return redirect()->route('home')->with('success', 'Booking submitted, waiting for admin approval.');
     }
 
     // Menampilkan booking untuk admin

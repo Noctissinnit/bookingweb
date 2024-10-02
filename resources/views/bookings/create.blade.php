@@ -260,73 +260,79 @@ body {
 
 <!-- Modal untuk form booking -->
 <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <form class="modal-dialog modal-lg" id="bookingForm" role="document">
+        @csrf
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="bookingModalLabel">Book Meeting Room</h5>
             </div>
+            <div class="modal-body">
+                <input type="hidden" id="selectedDate" name="date">
 
-                <div class="modal-body">
-                    <input type="hidden" id="selectedDate" name="date">
-
-                    <form>
-                        <div class="row">
-                          <div class="col">
-                            <label for="User" class="font-weight-bold">User</label>
-                            <input type="text" class="form-control" placeholder="Username">
-                          </div>
-                          <div class="col">
-                            <label for="Password" class="font-weight-bold">Password</label>
-                            <input type="text" class="form-control" placeholder="Password">
-                          </div>
-                        </div>
-                      </form>
-
-
-
-                    <div class="form-group">
-                        <label for="room" class="font-weight-bold">Select Room</label>
-                        <select name="room_id" class="form-control" required>
-                            @foreach($rooms as $room)
-                                <option value="{{ $room->id }}">{{ $room->name }}</option>
-                            @endforeach
-                        </select>
+                <div class="row">
+                    <div class="col">
+                        <label for="Nama" class="font-weight-bold">Nama</label>
+                        <input type="text" class="form-control" name="nama" placeholder="Nama">
                     </div>
-
-
-
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="start_time" class="font-weight-bold">Start Time</label>
-                            <input type="time" class="form-control" name="start_time" required>
-                        </div>
-
-                        <div class="form-group col-md-6">
-                            <label for="end_time" class="font-weight-bold">End Time</label>
-                            <input type="time" class="form-control" name="end_time" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description" class="font-weight-bold">Description</label>
-                        <textarea class="form-control" name="description" rows="3" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Invitation</label>
-                        <select class="select2" name="states[]" multiple="" data-placeholder="Select a State" style="width: 100%;">
-                            <option value="Alabama">Alabama</option>
-                            <option value="Alaska">Alaska</option>
-                            <option value="California">California</option>
-                        </select>
+                    <div class="col">
+                        <label for="Email" class="font-weight-bold">Email</label>
+                        <input type="email" class="form-control" name="email" placeholder="Email">
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Submit Booking</button>
+                <div class="row">
+                    <div class="col">
+                        <label for="NIP" class="font-weight-bold">NIP</label>
+                        <input type="text" class="form-control" name="nip" placeholder="NIP" required>
+                    </div>
+                    <div class="col">
+                        <label for="Department" class="font-weight-bold">Department</label>
+                        <input type="text" class="form-control" name="department" placeholder="Department" required>
+                    </div>
                 </div>
-            </form>
+
+
+                <div class="form-group">
+                    <label for="room" class="font-weight-bold">Select Room</label>
+                    <select name="room_id" class="form-control" required>
+                        @foreach($rooms as $room)
+                            <option value="{{ $room->id }}">{{ $room->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="start_time" class="font-weight-bold">Start Time</label>
+                        <input type="time" class="form-control" name="start_time" required>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="end_time" class="font-weight-bold">End Time</label>
+                        <input type="time" class="form-control" name="end_time" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="font-weight-bold">Description</label>
+                    <textarea class="form-control" name="description" rows="3" required></textarea>
+                </div>
+                <!-- <div class="form-group">
+                    <label>Invitation</label>
+                    <select class="select2" name="states[]" multiple="" data-placeholder="Select a State" style="width: 100%;">
+                        <option value="Alabama">Alabama</option>
+                        <option value="Alaska">Alaska</option>
+                        <option value="California">California</option>
+                    </select>
+                </div> -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Submit Booking</button>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
 
 @endsection
@@ -336,13 +342,14 @@ body {
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@4.4.2/main.min.js"></script>
 
 <script>
-let isLoggedIn = false; // Awalnya pengguna belum login
+let isLoggedIn = {{ auth()->check() ? "true" : "false" }};
 let bookings = {};
 
 const loginUrl = "{{ route('bookings.login') }}";
+const storeUrl = "{{ route('bookings.store') }}";
 
 // Daftar ruangan
-const availableRooms = ['Ruang A', 'Ruang B', 'Ruang C'];
+const availableRooms = [];
 
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
@@ -360,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isLoggedIn) {
                 // selectedDateBooking.value = dateString; // Set tanggal yang dipilih
                 $('#selectedDate').val(info.dateStr);
-                const bookingDetails = bookings[dateString];
+                const bookingDetails = bookings[info];
                 if (bookingDetails) {
                     alert(`Ruangan sudah dipinjam:\nRuang: ${bookingDetails.room}\nMulai: ${bookingDetails.startTime}\nAkhir: ${bookingDetails.endTime}\nPeserta: ${bookingDetails.participants}\nDeskripsi: ${bookingDetails.description}`);
                 } else {
@@ -387,28 +394,30 @@ document.addEventListener('DOMContentLoaded', function() {
         // const user = registeredUsers.find(user => user.username === username && user.password === password);
         const response = await $.get(loginUrl, { email, password });
         if (response.success) {
-            isLoggedIn = true; // Set login status
-            alert('Login Berhasil!');
-            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-            loginModal.hide();
-            const bookingModal = new bootstrap.Modal(document.getElementById('bookingModal'));
-            bookingModal.show(); // Tampilkan modal peminjaman setelah login
+            location.reload();
+            // isLoggedIn = true; // Set login status
+            // alert('Login Berhasil!');
+            // const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+            // loginModal.hide();
+            // const bookingModal = new bootstrap.Modal(document.getElementById('bookingModal'));
+            // bookingModal.show(); // Tampilkan modal peminjaman setelah login
         } else {
             alert('Username atau Password salah!');
         }
     });
 
-    $('#bookingForm').submit((e) => {
+    $('#bookingForm').submit(async (e) => {
         e.preventDefault();
-        const room = document.getElementById('roomSelect').value;
-        const startTime = document.getElementById('startTime').value;
-        const endTime = document.getElementById('endTime').value;
-        const participants = document.getElementById('participants').value;
-        const description = document.getElementById('description').value;
-        const bookingDate = selectedDateBooking.value;
+        // const room = document.getElementById('roomSelect').value;
+        // const startTime = document.getElementById('startTime').value;
+        // const endTime = document.getElementById('endTime').value;
+        // const participants = document.getElementById('participants').value;
+        // const description = document.getElementById('description').value;
+        // const bookingDate = selectedDateBooking.value;
 
         // Simpan peminjaman
-        bookings[bookingDate] = { room, startTime, endTime, participants, description };
+        // bookings[bookingDate] = { room, startTime, endTime, description };
+        await $.post(storeUrl, $('#bookingForm').serialize());
         updateDashboard();
 
         // Setelah menyimpan, logout otomatis
