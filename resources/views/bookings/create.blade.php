@@ -216,8 +216,16 @@ body {
                             <div id="room-name">{{ $room->name }}: {{ $room->isBooked() ? "Tidak" : "" }} Tersedia</div>
                         @endforeach
                     </div>
-                    <h4>Peminjaman Saat Ini</h4>
-                    <div id="dashboardItems"></div>
+                    @auth
+                        <h4>Peminjaman Saat Ini</h4>
+                        <div id="dashboardItems">
+                            @foreach ($rooms as $room)
+                                @if($room->isBookedAuth())
+                                    <div id="room-name">{{ $room->name }}</div>
+                                @endif
+                            @endforeach
+                        </div>
+                    @endauth
                 </div>
 
                 <!-- Input untuk menambah peminjaman -->
