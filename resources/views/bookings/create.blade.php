@@ -211,7 +211,11 @@ body {
                 <div class="dashboard">
                     <h2>Dashboard Peminjaman Ruangan</h2>
                     <h4>Ruangan yang Tersedia</h4>
-                    <div id="availableRoomsList" class="mb-3"></div>
+                    <div id="availableRoomsList" class="mb-3">
+                        @foreach ($rooms as $room)
+                            <div id="room-name">{{ $room->name }}: {{ $room->isBooked() ? "Tidak" : "" }} Tersedia</div>
+                        @endforeach
+                    </div>
                     <h4>Peminjaman Saat Ini</h4>
                     <div id="dashboardItems"></div>
                 </div>
@@ -295,7 +299,9 @@ body {
                     <label for="room" class="font-weight-bold">Select Room</label>
                     <select name="room_id" class="form-control" required>
                         @foreach($rooms as $room)
-                            <option value="{{ $room->id }}">{{ $room->name }}</option>
+                            @if(!$room->isBooked())
+                                <option value="{{ $room->id }}">{{ $room->name }}</option>
+                            @endif
                         @endforeach
                     </select>
                 </div>

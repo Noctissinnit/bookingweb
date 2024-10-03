@@ -15,4 +15,8 @@ class Room extends Model
     {
         return $this->hasMany(Booking::class);
     }
+    public function isBooked()
+    {
+        return Booking::where('room_id', $this->id)->exists();
+    }
 }
