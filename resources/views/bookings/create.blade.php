@@ -213,7 +213,7 @@ body {
                     <h4>Ruangan yang Tersedia</h4>
                     <div id="availableRoomsList" class="mb-3">
                         @foreach ($rooms as $room)
-                            <div id="room-name">{{ $room->name }}: {{ $room->isBooked() ? "Tidak" : "" }} Tersedia</div>
+                            <div id="room-name">{{ $room->name }}: {{ $room->isBooked() ? ("Tidak Tersedia (".$room->booking()->nama.")") : "Tersedia" }}</div>
                         @endforeach
                     </div>
                     @auth
@@ -439,9 +439,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const bookingModal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
         bookingModal.hide();
         alert('Peminjaman Ruangan berhasil disimpan!');
+        location.reload();
 
         // Reset form
-        $('#bookingForm').reset();
+        // $('#bookingForm').reset();
     });
 
 

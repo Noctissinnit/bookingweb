@@ -12,9 +12,13 @@ class Room extends Model
 
     protected $fillable = ['name'];
 
-    public function bookings()
+    // public function bookings()
+    // {
+    //     return $this->hasMany(Booking::class);
+    // }
+    public function booking()
     {
-        return $this->hasMany(Booking::class);
+        return Booking::where('room_id', $this->id)->first();
     }
     // Jika room dibooking oleh user
     public function isBooked()
