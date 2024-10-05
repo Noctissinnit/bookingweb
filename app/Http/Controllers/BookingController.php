@@ -39,7 +39,6 @@ class BookingController extends Controller
     // Menyimpan booking baru
     public function store(Request $request)
     {
-        Log::debug(Auth::user());
         $request->validate([
             'room_id' => 'required',
             'date' => 'required|date',
@@ -67,8 +66,6 @@ class BookingController extends Controller
             'approved' => true, // Otomatis approve
         ]);
 
-        // Logout setelah menambahkan data
-        Auth::logout();
         return response()->json(['success' => true]);
 
         // return redirect()->route('home')->with('success', 'Booking submitted, waiting for admin approval.');
