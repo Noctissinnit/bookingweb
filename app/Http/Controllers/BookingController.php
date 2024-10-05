@@ -63,7 +63,8 @@ class BookingController extends Controller
             'email' => $request->email,
             'nip' => $request->nip,
             'department' => $request->department,
-            'approved' => false, // Menunggu approval
+            // 'approved' => false, // Menunggu approval
+            'approved' => true, // Otomatis approve
         ]);
 
         // Logout setelah menambahkan data
