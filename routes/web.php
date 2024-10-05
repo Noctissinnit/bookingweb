@@ -12,7 +12,7 @@ Route::get('/', function () {
 });
 
 Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
-Route::get('/bookings/login', [BookingController::class, 'login'])->name('bookings.login');
+Route::post('/bookings/login', [BookingController::class, 'login'])->name('bookings.login');
 Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
 
 // Route untuk authentication (login/register)

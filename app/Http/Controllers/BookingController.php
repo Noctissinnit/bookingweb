@@ -6,10 +6,12 @@ use App\Mail\BookingApprovedMail;
 use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Room;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Spatie\GoogleCalendar\Event;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
@@ -23,17 +25,13 @@ class BookingController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        $request->validate([
+            'nis' => ['required'],
             'password' => ['required'],
         ]);
+        $user = User::where('nis', $request->nis)->first();
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            return response()->json(['success' => true]);
-        }
-        return response()->json(['success' => false]);
+        return response()->json(['success' => Hash::check($request->password, $user->password)]);
     }
 
     // Menyimpan booking baru

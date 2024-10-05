@@ -16,7 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->call(new DeleteExpiredBookings)->everyFiveSeconds();
     })
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->validateCsrfTokens(except: [
+            '/bookings/login'
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
