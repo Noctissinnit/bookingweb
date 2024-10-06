@@ -36,7 +36,7 @@ class BookingController extends Controller
         $user = User::where("nis", $request->nis)->first();
 
         return response()->json([
-            "success" => Hash::check($request->password, $user->password),
+            "success" => $user !== null && Hash::check($request->password, $user->password),
         ]);
     }
 
