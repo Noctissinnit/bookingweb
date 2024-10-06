@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\GoogleController;
@@ -10,6 +11,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect()->route('bookings.create');
 });
+
+
+Route::get('/admin/login', [AdminController::class, 'indexLogin'])->name('rooms.index-login');
 
 Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
 Route::get('/bookings/list', [BookingController::class, 'list'])->name('bookings.list');
@@ -30,6 +34,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Route untuk User yang bisa melakukan booking
     // Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
     // Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('rooms.dashboard');
 
     // Route untuk Admin (hanya admin yang bisa mengakses CRUD room dan approve booking)
     Route::get('/admin/rooms', [RoomController::class, 'index'])->name('rooms.index');

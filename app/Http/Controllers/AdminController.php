@@ -13,38 +13,39 @@ use Spatie\GoogleCalendar\Event;
 use Carbon\Carbon;
 class AdminController extends Controller
 {
-    public function __construct()
+    public function indexLogin()
     {
-        $this->middleware('role:admin');
+        return view("admin.login");
     }
-
-    // Tampilkan halaman untuk approve booking                                                                                
+    // Tampilkan halaman untuk approve booking
     public function index()
     {
         // Menampilkan semua booking yang belum diapprove
-        $bookings = Booking::where('is_approved', false)->get();
-        return view('admin.bookings', compact('bookings'));
+        $bookings = Booking::where("is_approved", false)->get();
+        return view("admin.bookings", compact("bookings"));
     }
     public function approve($id)
     {
         $booking = Booking::findOrFail($id);
-    $booking->is_approved = true;
-    $booking->save();
+        $booking->is_approved = true;
+        $booking->save();
 
-    $event = new Event;
-    $event->name = 'Meeting in ' . $booking->room->name;
-    $event->startDateTime = Carbon::parse($booking->start_time);
-    $event->endDateTime = Carbon::parse($booking->end_time);
-    $event->description = $booking->description;
-    $event->addAttendee([
-        'email' => $booking->user->email,
-    ]);
-    $event->save();
+        $event = new Event();
+        $event->name = "Meeting in " . $booking->room->name;
+        $event->startDateTime = Carbon::parse($booking->start_time);
+        $event->endDateTime = Carbon::parse($booking->end_time);
+        $event->description = $booking->description;
+        $event->addAttendee([
+            "email" => $booking->user->email,
+        ]);
+        $event->save();
 
-    // Mengirim notifikasi ke user yang melakukan booking         
-    $booking->user->notify(new BookingApprovedNotification($booking));
-    // Mengirim email ke user yang melakukan booking
-    Mail::to($booking->user->email)->send(new BookingApprovedMail($booking));
-    return redirect()->back()->with('success', 'Booking telah disetujui.');
+        // Mengirim notifikasi ke user yang melakukan booking
+        $booking->user->notify(new BookingApprovedNotification($booking));
+        // Mengirim email ke user yang melakukan booking
+        Mail::to($booking->user->email)->send(
+            new BookingApprovedMail($booking)
+        );
+        return redirect()->back()->with("success", "Booking telah disetujui.");
     }
 }

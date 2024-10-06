@@ -85,6 +85,12 @@ class BookingController extends Controller
     }
     
     public function destroy(Request $request){
+        if (Auth::user()->role !== "admin") {
+            return redirect()
+                ->route("home")
+                ->with("error", "Unauthorized access");
+        }
+        
         Booking::where('id', $request->id)->delete();
         return redirect()
             ->route("bookings.create")
