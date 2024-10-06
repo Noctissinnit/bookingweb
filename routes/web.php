@@ -12,6 +12,7 @@ Route::get('/', function () {
 });
 
 Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
+Route::get('/bookings/list', [BookingController::class, 'list'])->name('bookings.list');
 Route::post('/bookings/login', [BookingController::class, 'login'])->name('bookings.login');
 Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
 
@@ -39,6 +40,8 @@ Route::group(['middleware' => 'auth'], function () {
     // Route untuk Admin untuk melihat dan approve booking
     Route::get('/admin/bookings', [BookingController::class, 'indexAdmin'])->name('admin.bookings.index');
     Route::post('/admin/bookings/{id}/approve', [BookingController::class, 'approve'])->name('admin.bookings.approve');
+    
+    Route::get('/bookings/destroy', [BookingController::class, 'destroy'])->name('bookings.destroy');
 });
 
 // Route untuk Google OAuth Login (menggunakan Socialite)

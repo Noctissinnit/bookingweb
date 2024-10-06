@@ -16,75 +16,101 @@ use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
+    public function list()
+    {
+        return response()->json(Booking::whereDate("date", Carbon::today())->get());
+    }
     // Hanya menampilkan form booking untuk user biasa
     public function create()
     {
         $rooms = Room::all();
-        return view('bookings.create', compact('rooms'));
+        return view("bookings.create", compact("rooms"));
     }
 
     public function login(Request $request)
     {
         $request->validate([
-            'nis' => ['required'],
-            'password' => ['required'],
+            "nis" => ["required"],
+            "password" => ["required"],
         ]);
-        $user = User::where('nis', $request->nis)->first();
+        $user = User::where("nis", $request->nis)->first();
 
-        return response()->json(['success' => Hash::check($request->password, $user->password)]);
+        return response()->json([
+            "success" => Hash::check($request->password, $user->password),
+        ]);
     }
 
     // Menyimpan booking baru
     public function store(Request $request)
     {
         $request->validate([
-            'room_id' => 'required',
-            'date' => 'required|date',
-            'start_time' => 'required',
-            'end_time' => 'required',
-            'description' => 'required',
-            'nama' => 'required',
-            'email' => 'required',
-            'nip' => 'required',
-            'department' => 'required',
+            "nis" => "required",
+            "password" => "required",
+            "room_id" => "required",
+            "date" => "required|date",
+            "start_time" => "required",
+            "end_time" => "required",
+            "description" => "required",
+            "nama" => "required",
+            "email" => "required",
+            "nip" => "required",
+            "department" => "required",
         ]);
+
+        $user = User::where("nis", $request->nis)->first();
+        if (!Hash::check($request->password, $user->password)) {
+            return redirect()
+                ->route("bookings.create")
+                ->with("failed", "Booking gagal ditambahkan.");
+        }
 
         Booking::create([
-            'user_id' => Auth::id(),
-            'room_id' => $request->room_id,
-            'date' => $request->date,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-            'description' => $request->description,
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'nip' => $request->nip,
-            'department' => $request->department,
+            "user_id" => $user->id_user,
+            "room_id" => $request->room_id,
+            "date" => $request->date,
+            "start_time" => $request->start_time,
+            "end_time" => $request->end_time,
+            "description" => $request->description,
+            "nama" => $request->nama,
+            "email" => $request->email,
+            "nip" => $request->nip,
+            "department" => $request->department,
             // 'approved' => false, // Menunggu approval
-            'approved' => true, // Otomatis approve
+            "approved" => true, // Otomatis approve
         ]);
 
-        return response()->json(['success' => true]);
-
-        // return redirect()->route('home')->with('success', 'Booking submitted, waiting for admin approval.');
+        return redirect()
+            ->route("bookings.create")
+            ->with("success", "Booking berhasil ditambahkan.");
+    }
+    
+    public function destroy(Request $request){
+        Booking::where('id', $request->id)->delete();
+        return redirect()
+            ->route("bookings.create")
+            ->with("success", "Booking berhasil dihapus.");
     }
 
     // Menampilkan booking untuk admin
     public function indexAdmin()
     {
-        if (Auth::user()->role !== 'admin') {
-            return redirect()->route('home')->with('error', 'Unauthorized access');
+        if (Auth::user()->role !== "admin") {
+            return redirect()
+                ->route("home")
+                ->with("error", "Unauthorized access");
         }
 
         $bookings = Booking::all();
-        return view('admin.bookings.index', compact('bookings'));
+        return view("admin.bookings.index", compact("bookings"));
     }
 
     // Proses approve booking oleh admin
     public function approve($id)
     {
-        if (Auth::user()->role !== 'admin') {
-            return redirect()->route('home')->with('error', 'Unauthorized access');
+        if (Auth::user()->role !== "admin") {
+            return redirect()
+                ->route("home")
+                ->with("error", "Unauthorized access");
         }
 
         $booking = Booking::find($id);
@@ -93,8 +119,12 @@ class BookingController extends Controller
             $booking->save();
 
             // Kurangi 7 jam dari waktu mulai dan selesai
-            $startDateTime = Carbon::parse($booking->date . ' ' . $booking->start_time)->subHours(7);
-            $endDateTime = Carbon::parse($booking->date . ' ' . $booking->end_time)->subHours(7);
+            $startDateTime = Carbon::parse(
+                $booking->date . " " . $booking->start_time
+            )->subHours(7);
+            $endDateTime = Carbon::parse(
+                $booking->date . " " . $booking->end_time
+            )->subHours(7);
 
             // Buat event di sistem Anda (misal dengan Spatie Google Calendar)
             // $event = new Event;
@@ -105,14 +135,21 @@ class BookingController extends Controller
             // $event->save();
 
             // Kirim email notifikasi setelah approve
-            Mail::to($booking->user->email)->send(new BookingApprovedMail($booking));
+            Mail::to($booking->user->email)->send(
+                new BookingApprovedMail($booking)
+            );
 
             // Ambil token OAuth dari session
-            $accessToken = session('google_access_token');
+            $accessToken = session("google_access_token");
 
             // Jika token tidak ada, arahkan pengguna untuk login ulang dengan Google
             if (!$accessToken) {
-                return redirect()->route('login.google')->with('error', 'Please login with Google to sync your calendar.');
+                return redirect()
+                    ->route("login.google")
+                    ->with(
+                        "error",
+                        "Please login with Google to sync your calendar."
+                    );
             }
 
             // Inisialisasi Google Client dengan token
@@ -123,26 +160,33 @@ class BookingController extends Controller
 
             // Membuat event untuk disimpan di kalender pengguna
             $googleEvent = new \Google_Service_Calendar_Event([
-                'summary' => 'Meeting Room Booking: ' . $booking->room->name,
-                'start' => [
-                    'dateTime' => $startDateTime->toRfc3339String(),  // Gunakan waktu yang sudah dikurangi 7 jam
-                    'timeZone' => 'Asia/Jakarta',
+                "summary" => "Meeting Room Booking: " . $booking->room->name,
+                "start" => [
+                    "dateTime" => $startDateTime->toRfc3339String(), // Gunakan waktu yang sudah dikurangi 7 jam
+                    "timeZone" => "Asia/Jakarta",
                 ],
-                'end' => [
-                    'dateTime' => $endDateTime->toRfc3339String(),  // Gunakan waktu yang sudah dikurangi 7 jam
-                    'timeZone' => 'Asia/Jakarta',
+                "end" => [
+                    "dateTime" => $endDateTime->toRfc3339String(), // Gunakan waktu yang sudah dikurangi 7 jam
+                    "timeZone" => "Asia/Jakarta",
                 ],
-                'attendees' => [
-                    ['email' => $booking->user->email],  // email pengguna yang diundang
+                "attendees" => [
+                    ["email" => $booking->user->email], // email pengguna yang diundang
                 ],
             ]);
 
             // Simpan event ke kalender utama pengguna
-            $service->events->insert('primary', $googleEvent);
+            $service->events->insert("primary", $googleEvent);
 
-            return redirect()->route('admin.bookings.index')->with('success', 'Booking approved and event created in Google Calendar.');
+            return redirect()
+                ->route("admin.bookings.index")
+                ->with(
+                    "success",
+                    "Booking approved and event created in Google Calendar."
+                );
         }
 
-        return redirect()->route('admin.bookings.index')->with('error', 'Booking not found.');
+        return redirect()
+            ->route("admin.bookings.index")
+            ->with("error", "Booking not found.");
     }
 }
