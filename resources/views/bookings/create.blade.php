@@ -10,6 +10,7 @@
 <script>
 const isAuth = @if(Auth::check()) true @else false @endif;
 const listUrl = "{{ route('bookings.list') }}";
+const roomListUrl = "{{ route('rooms.list') }}";
 const loginUrl = "{{ route('bookings.login') }}";
 const storeUrl = "{{ route('bookings.store') }}";
 const destroyUrl = "{{ route('bookings.destroy') }}";
@@ -25,10 +26,12 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
             <div id="current-time"></div>
         </div>
         <div class="col-md-5 room-card">
-            <h4>List Ruangan</h4>
+            <h4>List Ruangan Hari Ini</h4>
             <div id="availableRoomsList" class="mb-3">
                 @foreach ($rooms as $room)
-                    <div class="room-name">{{ $room->name }}: {{ $room->isBooked() ? ("Tidak Tersedia (".$room->booking()->nama.")") : "Tersedia" }}</div>
+                    @php($roomToday = $room->bookings()->whereDate('date', \Carbon\Carbon::today())->first())
+                    <div class="room-name">{{ $room->name }}: {{ $room->bookings->isNotEmpty() && $roomToday
+                        ? ("Tidak Tersedia (".$roomToday->nama.")") : "Tersedia" }}</div>
                 @endforeach
             </div>
         </div>
@@ -73,7 +76,7 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
 <!-- Modal untuk menambah peminjaman -->
 <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form class="modal-content" action="{{ route('bookings.store') }}" method="POST">
+        <form id="form-booking" class="modal-content" action="{{ route('bookings.store') }}" method="POST">
             <div class="modal-header">
                 <h5 class="modal-title" id="bookingModalLabel">Tambah Peminjaman</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
@@ -108,9 +111,7 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
                 <div class="form-group">
                     <select name="room_id" id="select-room" class="form-control" style="width: 100%" required>
                         @foreach($rooms as $room)
-                            @if(!$room->isBooked())
-                                <option value="{{ $room->id }}">{{ $room->name }}</option>
-                            @endif
+                            <option value="{{ $room->id }}">{{ $room->name }}</option>
                         @endforeach
                     </select>
                 </div>

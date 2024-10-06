@@ -17,6 +17,10 @@ class RoomController extends Controller
         $rooms = Room::all();
         return view('rooms.index', compact('rooms'));
     }
+    
+    public function list(){
+        return response()->json(Room::with('bookings')->get());
+    }
 
     // Form untuk membuat room baru (Admin only)
     public function create()

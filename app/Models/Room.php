@@ -10,24 +10,10 @@ class Room extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ["name"];
 
-    // public function bookings()
-    // {
-    //     return $this->hasMany(Booking::class);
-    // }
-    public function booking()
+    public function bookings()
     {
-        return Booking::where('room_id', $this->id)->first();
-    }
-    // Jika room dibooking oleh user
-    public function isBooked()
-    {
-        return Booking::where('room_id', $this->id)->exists();
-    }
-    // Jika room dibooking oleh user yang sekarang terautentikasi
-    public function isBookedAuth()
-    {
-        return Booking::where('room_id', $this->id)->where('user_id', Auth::id())->exists();
+        return $this->hasMany(Booking::class, 'room_id');
     }
 }

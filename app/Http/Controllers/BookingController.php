@@ -18,7 +18,7 @@ class BookingController extends Controller
 {
     public function list()
     {
-        return response()->json(Booking::whereDate("date", Carbon::today())->get());
+        return response()->json(Booking::whereDate("date", Carbon::today())->with('room')->get());
     }
     // Hanya menampilkan form booking untuk user biasa
     public function create()
