@@ -9,7 +9,12 @@ $(document).ready(() => {
         dropdownParent: $("#bookingModal"),
         width: "resolve",
     });
+    $("#select-members").select2({
+        dropdownParent: $("#bookingModal"),
+        width: "resolve",
+    });
     
+    $("#form-login").submit(checkLogin);
     $('#form-booking').submit(async e => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
@@ -142,7 +147,9 @@ function formatTime(time) {
     return time.split(":").slice(0, -1).join(":");
 }
 
-async function checkLogin() {
+async function checkLogin(e) {
+    e.preventDefault();
+    
     const nis = document.getElementById("login-nis").value;
     const password = document.getElementById("login-password").value;
 

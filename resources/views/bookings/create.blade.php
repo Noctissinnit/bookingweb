@@ -50,7 +50,7 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
 <!-- Modal untuk Login -->
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <form id="form-login" class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="loginModalLabel">Login</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
@@ -59,17 +59,17 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <input type="text" id="login-nis" class="form-control" placeholder="NIS" />
+                    <input type="text" id="login-nis" class="form-control" placeholder="NIS" required/>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="login-password" class="form-control" placeholder="Password" />
+                    <input type="password" id="login-password" class="form-control" placeholder="Password" required/>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button onclick="checkLogin()" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-primary">Login</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -112,6 +112,13 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
                     <select name="room_id" id="select-room" class="form-control" style="width: 100%" required>
                         @foreach($rooms as $room)
                             <option value="{{ $room->id }}">{{ $room->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="members[]" id="select-members" multiple class="form-control" style="width: 100%" required>
+                        @foreach($members as $member)
+                            <option value="{{ $member->id }}">{{ $member->name }}</option>
                         @endforeach
                     </select>
                 </div>
