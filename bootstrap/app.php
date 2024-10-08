@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->call(new DeleteExpiredBookings)->everyFiveSeconds();
+        // $schedule->call(new DeleteExpiredBookings)->everyFiveSeconds();
     })
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->validateCsrfTokens(except: [

@@ -17,16 +17,23 @@ use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
-    public function list()
+    public function list(Request $request)
     {
-        return response()->json(Booking::whereDate("date", Carbon::today())->with('room')->get());
+        $bookings = Booking::with('room');
+        if($request->today) $bookings = $bookings->whereDate('date', Carbon::today());
+        if($request->room_id) $bookings = $bookings->where('room_id', $request->room_id);
+        
+        $bookings = $bookings->get();
+        
+        return response()->json($bookings);
     }
     // Hanya menampilkan form booking untuk user biasa
     public function create(int $id)
     {
-        $room = Room::where('id', $id)->first();
+        $roomId = $id;
+        $room = Room::where('id', $roomId)->first();
         $members = Member::all();
-        return view("bookings.create", compact("room", "members"));
+        return view("bookings.create", compact("room", "roomId", "members"));
     }
 
     public function login(Request $request)

@@ -124,7 +124,11 @@ function updateDateTime() {
 }
 
 async function updateRooms() {
-    bookingsData = await $.get(listUrl);
+    const url = new URL(listUrl);
+    url.searchParams.set('today', null);
+    url.searchParams.set('room_id', roomId);
+    
+    bookingsData = await $.get(url.toString());
 
     const currentBookingsDiv = $("#current-bookings");
     currentBookingsDiv.html("<h4>Jam Penggunaan Hari Ini:</h4>");
@@ -135,7 +139,7 @@ async function updateRooms() {
         bookingsData.forEach((booking, index) => {
             currentBookingsDiv.append(`
             <div>
-                <span>${booking.room.name} dipinjam oleh ${booking.nama} dari ${formatTime(booking.start_time)} hingga ${formatTime(booking.end_time)}</span>
+                <span>Dipinjam oleh ${booking.nama} dari ${formatTime(booking.start_time)} hingga ${formatTime(booking.end_time)}</span>
                 ${isAuth ? `<a href="${destroyUrl}?id=${booking.id}"><button class="btn btn-danger btn-sm ml-2">Hapus</button></a>` : ""}
             </div>
             `);

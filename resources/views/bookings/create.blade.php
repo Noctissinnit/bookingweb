@@ -9,6 +9,8 @@
 
 <script>
 const isAuth = @if(Auth::check()) true @else false @endif;
+const roomId = {{ $roomId }};
+
 const listUrl = "{{ route('bookings.list') }}";
 const roomListUrl = "{{ route('rooms.list') }}";
 const loginUrl = "{{ route('bookings.login') }}";
@@ -27,16 +29,14 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
             <div id="current-date"></div>
             <div id="current-time"></div>
         </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="col-md-7" id="calendar"></div>
-        <div class="col-md-5">
-            <div id="current-bookings" class="border p-2">
+        <div class="col-md-5 room-card">
+            <div id="current-bookings">
                 <h4>Jam Penggunaan Hari Ini:</h4>
             </div>
         </div>
     </div>
+
+    <div id="calendar" class="mt-3"></div>
 </div>
 
 <!-- Modal untuk Login -->
