@@ -54,9 +54,7 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
         <form id="form-login" class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="loginModalLabel">Login</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
@@ -87,9 +85,7 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
             <input type="hidden" name="room_id">
             <div class="modal-header">
                 <h5 class="modal-title" id="bookingModalLabel">Tambah Peminjaman</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
