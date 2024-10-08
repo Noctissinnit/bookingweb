@@ -68,13 +68,13 @@ class BookingController extends Controller
             "nama" => "required",
             "email" => "required",
             "department" => "required",
-            "members" => "required",
+            "members" => "nullable",
         ]);
 
         $user = User::where("nis", $request->nis)->first();
         if (!Hash::check($request->password, $user->password)) {
             return redirect()
-                ->route("bookings.create")
+                ->route("bookings.create", $request->room_id)
                 ->with("failed", "Booking gagal ditambahkan.");
         }
 
@@ -91,7 +91,7 @@ class BookingController extends Controller
             // 'approved' => false, // Menunggu approval
             "approved" => true, // Otomatis approve
         ]);
-        $booking->members()->sync($request->members);
+        if($request->members) $booking->members()->sync($request->members);
 
         return redirect()
             ->route("bookings.create")

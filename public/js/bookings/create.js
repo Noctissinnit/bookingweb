@@ -34,7 +34,7 @@ $(document).ready(() => {
         }
         
         const rooms = await $.get(roomListUrl);
-        let bookings = rooms.filter(dat => dat.id === parseInt(formData.get('room_id')))[0].bookings;
+        let bookings = rooms.filter(dat => dat.id === roomId)[0].bookings;
         if(bookings.length > 0){
             const bookingsToday = bookings.filter(dat => isToday(dat.date));
             if(bookingsToday.some(dat => isTimeRangeOverlap(formData.get("start_time"), formData.get("end_time"), formatTime(dat.start_time), formatTime(dat.end_time)))){
@@ -45,8 +45,6 @@ $(document).ready(() => {
         await $.post($('#form-booking').attr('action'), $('#form-booking').serialize());
         location.reload();
     });
-    
-    $('#bookingModal').modal('show');
 });
 
 function initTimepickers(){
@@ -160,7 +158,11 @@ async function updateRooms() {
 }
 
 function formatTime(time) {
-    return time.split(":").slice(0, -1).join(":");
+    let parts = time.split(":");
+    if (parts.length === 3) {
+        return parts.slice(0, 2).join(":");
+    }
+    return time;
 }
 
 async function checkLogin(e) {
@@ -171,6 +173,7 @@ async function checkLogin(e) {
 
     const res = await $.post(loginUrl, { nis, password });
     if (res.success) {
+        $('#form-booking>input[name="room_id"]').val(roomId);
         $('#form-booking>input[name="nis"]').val(nis);
         $('#form-booking>input[name="password"]').val(password);
         $('#form-booking>input[name="nama"]').val(res.data.name);

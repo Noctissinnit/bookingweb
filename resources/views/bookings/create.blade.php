@@ -84,6 +84,7 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
             <input type="hidden" name="password">
             <input type="hidden" name="nama">
             <input type="hidden" name="email">
+            <input type="hidden" name="room_id">
             <div class="modal-header">
                 <h5 class="modal-title" id="bookingModalLabel">Tambah Peminjaman</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
@@ -107,7 +108,7 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
                 </div>
                 <div class="form-group">
                     <label for="members[]">Peserta</label>
-                    <select name="members[]" id="select-members" multiple class="form-control" style="width: 100%" required>
+                    <select name="members[]" id="select-members" multiple class="form-control" style="width: 100%">
                         @foreach($members as $member)
                             <option value="{{ $member->id }}">{{ $member->name }}</option>
                         @endforeach
