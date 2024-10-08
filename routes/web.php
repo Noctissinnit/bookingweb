@@ -15,7 +15,7 @@ Route::get('/', function () {
 
 Route::get('/admin/login', [AdminController::class, 'indexLogin'])->name('rooms.index-login');
 
-Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
+Route::get('/bookings/create/{id}', [BookingController::class, 'create'])->name('bookings.create');
 Route::get('/bookings/list', [BookingController::class, 'list'])->name('bookings.list');
 Route::post('/bookings/login', [BookingController::class, 'login'])->name('bookings.login');
 Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');

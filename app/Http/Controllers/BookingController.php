@@ -22,11 +22,11 @@ class BookingController extends Controller
         return response()->json(Booking::whereDate("date", Carbon::today())->with('room')->get());
     }
     // Hanya menampilkan form booking untuk user biasa
-    public function create()
+    public function create(int $id)
     {
-        $rooms = Room::all();
+        $room = Room::where('id', $id)->first();
         $members = Member::all();
-        return view("bookings.create", compact("rooms", "members"));
+        return view("bookings.create", compact("room", "members"));
     }
 
     public function login(Request $request)

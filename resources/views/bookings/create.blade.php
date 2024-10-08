@@ -18,22 +18,14 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
 <script src="/js/bookings/create.js"></script>
 @endsection
 
+@section('navbar-title'){{ $room->name }}@endsection
+
 @section('content')
 <div class="container">
     <div class="row">
         <div class="col-md-7 room-card" id="room-status">
             <div id="current-date"></div>
             <div id="current-time"></div>
-        </div>
-        <div class="col-md-5 room-card">
-            <h4>List Ruangan Hari Ini</h4>
-            <div id="availableRoomsList" class="mb-3">
-                @foreach ($rooms as $room)
-                    @php($roomToday = $room->bookings()->whereDate('date', \Carbon\Carbon::today())->first())
-                    <div class="room-name">{{ $room->name }}: {{ $room->bookings->isNotEmpty() && $roomToday
-                        ? ("Tidak Tersedia (".$roomToday->nama.")") : "Tersedia" }}</div>
-                @endforeach
-            </div>
         </div>
     </div>
 
@@ -107,13 +99,6 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
                     <div class="col">
                         <input type="time" class="form-control" name="end_time" placeholder="Jam Selesai" />
                     </div>
-                </div>
-                <div class="form-group">
-                    <select name="room_id" id="select-room" class="form-control" style="width: 100%" required>
-                        @foreach($rooms as $room)
-                            <option value="{{ $room->id }}">{{ $room->name }}</option>
-                        @endforeach
-                    </select>
                 </div>
                 <div class="form-group">
                     <select name="members[]" id="select-members" multiple class="form-control" style="width: 100%" required>
