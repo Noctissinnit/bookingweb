@@ -14,6 +14,12 @@ $(document).ready(() => {
         width: "resolve",
     });
     
+    $('#btn-add-booking').click(() => {
+        const today = new Date();
+        $('input[name="date"]').val(today.toISOString().substring(0,10));
+        $("#loginModal").modal("show");
+    });
+    
     $("#form-login").submit(checkLogin);
     $('#form-booking').submit(async e => {
         e.preventDefault();
@@ -49,12 +55,6 @@ function generateCalendar() {
         },
         initialView: "dayGridMonth",
         dateClick: function (info) {
-            if (isAtLeastOneDayLess(info.date, new Date())) {
-                alert("Tidak bisa memilih hari sebelumnya.");
-                return;
-            }
-            $('input[name="date"]').val(info.dateStr);
-            $("#loginModal").modal("show");
         },
     });
     calendar.render();

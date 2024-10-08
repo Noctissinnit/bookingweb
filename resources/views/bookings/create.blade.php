@@ -28,6 +28,7 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
         <div class="col-md-7 room-card" id="room-status">
             <div id="current-date"></div>
             <div id="current-time"></div>
+            <button id="btn-add-booking" class="btn btn-primary">Tambah Peminjaman</button>
         </div>
         <div class="col-md-5 room-card">
             <div id="current-bookings">
