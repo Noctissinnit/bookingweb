@@ -8,7 +8,7 @@ use App\Models\Member;
 
 class Booking extends Model   
 {
-    protected $fillable = ['user_id', 'room_id', 'date', 'start_time', 'end_time', 'description','nama','email','nip','department','approved'];
+    protected $fillable = ['user_id', 'room_id', 'date', 'start_time', 'end_time', 'description','nama','email','department','approved'];
 
     public function room()
     {

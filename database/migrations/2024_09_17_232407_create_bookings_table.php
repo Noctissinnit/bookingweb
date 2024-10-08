@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('description');
             $table->string('nama');
             $table->string('email');
-            $table->string('nip');
             $table->string('department');
             $table->boolean('approved')->default(false);
             $table->unsignedBigInteger('user_id');

@@ -88,9 +88,6 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
                     <input type="email" class="form-control" name="email" placeholder="Email" />
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" name="nip" placeholder="NIP" required>
-                </div>
-                <div class="form-group">
                     <input type="text" class="form-control" name="department" placeholder="Department" required>
                 </div>
                 <div class="row form-group">

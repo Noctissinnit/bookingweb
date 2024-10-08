@@ -62,7 +62,6 @@ class BookingController extends Controller
             "description" => "required",
             "nama" => "required",
             "email" => "required",
-            "nip" => "required",
             "department" => "required",
             "members" => "required",
         ]);
@@ -83,7 +82,6 @@ class BookingController extends Controller
             "description" => $request->description,
             "nama" => $request->nama,
             "email" => $request->email,
-            "nip" => $request->nip,
             "department" => $request->department,
             // 'approved' => false, // Menunggu approval
             "approved" => true, // Otomatis approve
