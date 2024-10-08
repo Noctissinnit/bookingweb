@@ -1,11 +1,19 @@
 @extends('layouts.app')
 
-@section('head')
+@section('head')    
+<!-- FullCalendar CSS -->
+<link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.4.2/main.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.css" rel="stylesheet">
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha512-f0tzWhCwVFS3WeYaofoLWkTP62ObhewQ1EZn65oSYDZUg1+CyywGKkWzm8BxaJj5HGKI72PnMH9jYyIFz+GH7g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
 <link rel="stylesheet" href="/css/bookings/create.css">
 
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.4.2/main.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@4.4.2/main.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
 const isAuth = @if(Auth::check()) true @else false @endif;
@@ -70,6 +78,12 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
 <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <form id="form-booking" class="modal-content" action="{{ route('bookings.store') }}" method="POST">
+            @csrf
+            <input type="hidden" name="date">
+            <input type="hidden" name="nis">
+            <input type="hidden" name="password">
+            <input type="hidden" name="nama">
+            <input type="hidden" name="email">
             <div class="modal-header">
                 <h5 class="modal-title" id="bookingModalLabel">Tambah Peminjaman</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
@@ -77,28 +91,22 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
                 </button>
             </div>
             <div class="modal-body">
-                @csrf
-                <input type="hidden" name="date">
-                <input type="hidden" name="nis">
-                <input type="hidden" name="password">
                 <div class="form-group">
-                    <input type="text" class="form-control" name="nama" placeholder="Nama" />
-                </div>
-                <div class="form-group">
-                    <input type="email" class="form-control" name="email" placeholder="Email" />
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" name="department" placeholder="Department" required>
+                    <label for="department">Department</label>
+                    <input type="text" class="form-control" name="department" required>
                 </div>
                 <div class="row form-group">
                     <div class="col">
-                        <input type="time" class="form-control" name="start_time" placeholder="Jam Mulai" />
+                        <label for="start_time">Jam Mulai</label>
+                        <input class="timepicker form-control" name="start_time" placeholder="Jam Mulai" />
                     </div>
                     <div class="col">
-                        <input type="time" class="form-control" name="end_time" placeholder="Jam Selesai" />
+                        <label for="end_time">Jam Selesai</label>
+                        <input class="timepicker form-control" name="end_time" placeholder="Jam Selesai" />
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="members[]">Peserta</label>
                     <select name="members[]" id="select-members" multiple class="form-control" style="width: 100%" required>
                         @foreach($members as $member)
                             <option value="{{ $member->id }}">{{ $member->name }}</option>

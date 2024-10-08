@@ -2,6 +2,7 @@ let bookingsData = [];
 
 $(document).ready(() => {
     generateCalendar();
+    initTimepickers();
     updateDateTime();
     updateRooms();
 
@@ -13,12 +14,14 @@ $(document).ready(() => {
         dropdownParent: $("#bookingModal"),
         width: "resolve",
     });
-    
     $('#btn-add-booking').click(() => {
         const today = new Date();
-        $('input[name="date"]').val(today.toISOString().substring(0,10));
+        $('#form-booking>input[name="date"]').val(today.toISOString().substring(0,10));
         $("#loginModal").modal("show");
     });
+    
+    $('#form-login')[0].reset();
+    $('#form-booking')[0].reset();
     
     $("#form-login").submit(checkLogin);
     $('#form-booking').submit(async e => {
@@ -42,7 +45,16 @@ $(document).ready(() => {
         await $.post($('#form-booking').attr('action'), $('#form-booking').serialize());
         location.reload();
     });
+    
+    $('#bookingModal').modal('show');
 });
+
+function initTimepickers(){
+    $('input.timepicker').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+    })
+}
 
 function generateCalendar() {
     var calendarEl = document.getElementById("calendar");
@@ -159,8 +171,10 @@ async function checkLogin(e) {
 
     const res = await $.post(loginUrl, { nis, password });
     if (res.success) {
-        $('input[name="nis"]').val(nis);
-        $('input[name="password"]').val(password);
+        $('#form-booking>input[name="nis"]').val(nis);
+        $('#form-booking>input[name="password"]').val(password);
+        $('#form-booking>input[name="nama"]').val(res.data.name);
+        $('#form-booking>input[name="email"]').val(res.data.email);
 
         $("#loginModal").modal("hide");
         $("#bookingModal").modal("show");
