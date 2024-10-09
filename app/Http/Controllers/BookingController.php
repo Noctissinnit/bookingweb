@@ -19,8 +19,8 @@ class BookingController extends Controller
 {
     public function list(Request $request)
     {
-        $bookings = Booking::with('room');
-        if($request->today) $bookings = $bookings->whereDate('date', Carbon::today());
+        $bookings = Booking::with('room')->with('user:id_user,nis');
+        if($request->date) $bookings = $bookings->whereDate('date', $request->date);
         if($request->room_id) $bookings = $bookings->where('room_id', $request->room_id);
         
         $bookings = $bookings->get();

@@ -1,11 +1,9 @@
-let bookingsData = [];
-
 $(document).ready(() => {
     generateCalendar();
     initTimepickers();
     updateDateTime();
-    updateRooms();
-
+    updateBookings();
+    
     $("#select-room").select2({
         dropdownParent: $("#bookingModal"),
         width: "resolve",
@@ -44,8 +42,40 @@ $(document).ready(() => {
         }
         await $.post($('#form-booking').attr('action'), $('#form-booking').serialize());
         location.reload();
-    });
+    });    
 });
+
+async function showBookingHistory(date){
+    $('#bookingHistoryDate').html(date);
+    
+    const url = new URL(listUrl);
+    url.searchParams.set('date', date);
+    url.searchParams.set('room_id', roomId);
+    
+    const bookingsData = await $.get(url.toString());
+    const tableBody = $('#bookingHistoryTable>tbody');
+    
+    tableBody.html('');
+    if(bookingsData.length > 0){
+        bookingsData.forEach((data, i) => {
+            tableBody.append(`
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${data.nama}</td>
+                    <td>${data.user.nis}</td>
+                    <td>${data.department}</td>
+                    <td>${formatTime(data.start_time)}</td>
+                    <td>${formatTime(data.end_time)}</td>
+                    <td>${data.description}</td>
+                </tr>
+            `)
+        });
+    } else {
+        tableBody.html(`<tr><td colspan="7">Tidak ada data peminjaman...</td></tr>`)
+    }
+    
+    $('#bookingHistoryModal').modal('show');
+}
 
 function initTimepickers(){
     $('input.timepicker').datetimepicker({
@@ -65,6 +95,7 @@ function generateCalendar() {
         },
         initialView: "dayGridMonth",
         dateClick: function (info) {
+            showBookingHistory(info.dateStr);
         },
     });
     calendar.render();
@@ -133,12 +164,12 @@ function updateDateTime() {
     document.getElementById("current-time").innerText = formattedTime;
 }
 
-async function updateRooms() {
+async function updateBookings() {
     const url = new URL(listUrl);
-    url.searchParams.set('today', null);
+    url.searchParams.set('date', new Date().toISOString().substring(0,10));
     url.searchParams.set('room_id', roomId);
     
-    bookingsData = await $.get(url.toString());
+    const bookingsData = await $.get(url.toString());
 
     const currentBookingsDiv = $("#current-bookings");
     currentBookingsDiv.html("<h4>Jam Penggunaan Hari Ini:</h4>");
@@ -187,4 +218,4 @@ async function checkLogin(e) {
 }
 
 setInterval(updateDateTime, 1000);
-setInterval(updateRooms, 5000);
+setInterval(updateBookings, 5000);

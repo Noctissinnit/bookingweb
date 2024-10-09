@@ -48,6 +48,37 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
     <div id="calendar" class="mt-3"></div>
 </div>
 
+<!-- Modal untuk Histori Booking -->
+<div class="modal fade" id="bookingHistoryModal" tabindex="-1" role="dialog" aria-labelledby="bookingHistoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="min-width: 75rem" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookingHistoryModalLabel">Histori Peminjaman (<span id="bookingHistoryDate"></span>)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table id="bookingHistoryTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Nama</th>
+                            <th>NIS</th>
+                            <th>Department</th>
+                            <th>Jam Mulai</th>
+                            <th>Jam Selesai</th>
+                            <th>Kegiatan</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal untuk Login -->
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
