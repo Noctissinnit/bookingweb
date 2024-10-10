@@ -17,6 +17,10 @@ $(document).ready(() => {
         $('#form-booking>input[name="date"]').val(today.toISOString().substring(0,10));
         $("#loginModal").modal("show");
     });
+    $('#btn-history-add-booking').click(function(){
+        $('#bookingHistoryModal').modal('hide');
+        $("#loginModal").modal("show");
+    });
     
     $('#form-login')[0].reset();
     $('#form-booking')[0].reset();
@@ -45,11 +49,11 @@ $(document).ready(() => {
     });    
 });
 
-async function showBookingHistory(date){
-    $('#bookingHistoryDate').html(date);
+async function showBookingHistory(date, dateStr){
+    $('#bookingHistoryDate').html(dateStr);
     
     const url = new URL(listUrl);
-    url.searchParams.set('date', date);
+    url.searchParams.set('date', dateStr);
     url.searchParams.set('room_id', roomId);
     
     const bookingsData = await $.get(url.toString());
@@ -74,6 +78,9 @@ async function showBookingHistory(date){
         tableBody.html(`<tr><td colspan="7">Tidak ada data peminjaman...</td></tr>`)
     }
     
+    $('#form-booking>input[name="date"]').val(dateStr);
+    $('#btn-history-add-booking').css('display', isAtLeastOneDayLess(date, new Date()) ? 'none' : '');
+    
     $('#bookingHistoryModal').modal('show');
 }
 
@@ -95,7 +102,7 @@ function generateCalendar() {
         },
         initialView: "dayGridMonth",
         dateClick: function (info) {
-            showBookingHistory(info.dateStr);
+            showBookingHistory(info.date, info.dateStr);
         },
     });
     calendar.render();

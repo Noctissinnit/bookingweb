@@ -9,7 +9,7 @@
                 <div class="card-header">{{ __('Sidebar') }}</div>
                 <div class="list-group list-group-flush">
                     <!-- Sidebar untuk semua pengguna -->
-                    <a href="{{ route('bookings.create') }}" class="list-group-item list-group-item-action">Form Booking Meeting Room</a>
+                    <a class="list-group-item list-group-item-action">Form Booking Meeting Room</a>
 
                     <!-- Sidebar hanya untuk admin -->
                     @if (Auth::user()->role === 'admin')

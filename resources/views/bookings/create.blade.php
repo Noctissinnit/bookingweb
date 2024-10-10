@@ -74,6 +74,7 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                <button id="btn-history-add-booking" class="btn btn-primary" date="">Tambah Peminjaman</button>
             </div>
         </div>
     </div>

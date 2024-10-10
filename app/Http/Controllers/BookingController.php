@@ -94,7 +94,7 @@ class BookingController extends Controller
         if($request->members) $booking->members()->sync($request->members);
 
         return redirect()
-            ->route("bookings.create")
+            ->route("bookings.create", $request->room_id)
             ->with("success", "Booking berhasil ditambahkan.");
     }
     
@@ -105,9 +105,12 @@ class BookingController extends Controller
                 ->with("error", "Unauthorized access");
         }
         
-        Booking::where('id', $request->id)->delete();
+        $booking = Booking::where('id', $request->id);
+        $roomId = $booking->first()->room_id;
+        $booking->delete();
+        
         return redirect()
-            ->route("bookings.create")
+            ->route("bookings.create", $roomId)
             ->with("success", "Booking berhasil dihapus.");
     }
 

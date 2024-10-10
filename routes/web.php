@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 // Route untuk halaman utama 
 Route::get('/', function () {
-    return redirect()->route('bookings.create');
+    return redirect()->route('bookings.create', 1);
 });
 
 
