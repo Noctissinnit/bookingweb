@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('head')    
+@section('head')
 <!-- FullCalendar CSS -->
 <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.4.2/main.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.4.2/main.min.css" rel="stylesheet">
-    
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha512-f0tzWhCwVFS3WeYaofoLWkTP62ObhewQ1EZn65oSYDZUg1+CyywGKkWzm8BxaJj5HGKI72PnMH9jYyIFz+GH7g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+
 <link rel="stylesheet" href="/css/bookings/create.css">
 
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.4.2/main.min.js"></script>
@@ -36,7 +36,7 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
         <div class="col-md-7 room-card" id="room-status">
             <div id="current-date"></div>
             <div id="current-time"></div>
-            <button id="btn-add-booking" class="btn btn-primary">Tambah Peminjaman</button>
+
         </div>
         <div class="col-md-5 room-card">
             <div id="current-bookings">
@@ -60,12 +60,10 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
                 <table id="bookingHistoryTable" class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>No.</th>
-                            <th>Nama</th>
-                            <th>NIS</th>
-                            <th>Department</th>
-                            <th>Jam Mulai</th>
-                            <th>Jam Selesai</th>
+
+                            <th>Divisi</th>
+                            <th>Jam mulai</th>
+                            <th>Jam selesai</th>
                             <th>Kegiatan</th>
                         </tr>
                     </thead>
@@ -73,7 +71,7 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+
                 <button id="btn-history-add-booking" class="btn btn-primary" date="">Tambah Peminjaman</button>
             </div>
         </div>

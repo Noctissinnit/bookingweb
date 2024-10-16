@@ -3,7 +3,7 @@ $(document).ready(() => {
     initTimepickers();
     updateDateTime();
     updateBookings();
-    
+
     $("#select-room").select2({
         dropdownParent: $("#bookingModal"),
         width: "resolve",
@@ -21,10 +21,10 @@ $(document).ready(() => {
         $('#bookingHistoryModal').modal('hide');
         $("#loginModal").modal("show");
     });
-    
+
     $('#form-login')[0].reset();
     $('#form-booking')[0].reset();
-    
+
     $("#form-login").submit(checkLogin);
     $('#form-booking').submit(async e => {
         e.preventDefault();
@@ -34,7 +34,7 @@ $(document).ready(() => {
             e.preventDefault();
             return;
         }
-        
+
         const rooms = await $.get(roomListUrl);
         let bookings = rooms.filter(dat => dat.id === roomId)[0].bookings;
         if(bookings.length > 0){
@@ -46,27 +46,26 @@ $(document).ready(() => {
         }
         await $.post($('#form-booking').attr('action'), $('#form-booking').serialize());
         location.reload();
-    });    
+    });
 });
 
 async function showBookingHistory(date, dateStr){
     $('#bookingHistoryDate').html(dateStr);
-    
+
     const url = new URL(listUrl);
     url.searchParams.set('date', dateStr);
     url.searchParams.set('room_id', roomId);
-    
+
     const bookingsData = await $.get(url.toString());
     const tableBody = $('#bookingHistoryTable>tbody');
-    
+
     tableBody.html('');
     if(bookingsData.length > 0){
         bookingsData.forEach((data, i) => {
             tableBody.append(`
                 <tr>
-                    <td>${i + 1}</td>
-                    <td>${data.nama}</td>
-                    <td>${data.user.nis}</td>
+
+
                     <td>${data.department}</td>
                     <td>${formatTime(data.start_time)}</td>
                     <td>${formatTime(data.end_time)}</td>
@@ -77,10 +76,10 @@ async function showBookingHistory(date, dateStr){
     } else {
         tableBody.html(`<tr><td colspan="7">Tidak ada data peminjaman...</td></tr>`)
     }
-    
+
     $('#form-booking>input[name="date"]').val(dateStr);
     $('#btn-history-add-booking').css('display', isAtLeastOneDayLess(date, new Date()) ? 'none' : '');
-    
+
     $('#bookingHistoryModal').modal('show');
 }
 
@@ -111,10 +110,10 @@ function generateCalendar() {
 function isToday(dateString) {
     // Create a Date object from the input string
     const inputDate = new Date(dateString);
-    
+
     // Get today's date
     const today = new Date();
-    
+
     // Check if the input date is today by comparing the year, month, and day
     return inputDate.getFullYear() === today.getFullYear() &&
            inputDate.getMonth() === today.getMonth() &&
@@ -175,7 +174,7 @@ async function updateBookings() {
     const url = new URL(listUrl);
     url.searchParams.set('date', new Date().toISOString().substring(0,10));
     url.searchParams.set('room_id', roomId);
-    
+
     const bookingsData = await $.get(url.toString());
 
     const currentBookingsDiv = $("#current-bookings");
@@ -205,7 +204,7 @@ function formatTime(time) {
 
 async function checkLogin(e) {
     e.preventDefault();
-    
+
     const nis = document.getElementById("login-nis").value;
     const password = document.getElementById("login-password").value;
 
