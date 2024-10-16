@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Notifications\BookingApprovedNotification;
 use App\Models\Room;
@@ -18,7 +19,8 @@ class AdminController extends Controller
         return view("admin.login");
     }
     public function dashboard(){
-        return view('admin.dashboard');
+        $users = User::all();
+        return view('admin.dashboard', compact('users'));
     }
     // Tampilkan halaman untuk approve booking
     public function index()
