@@ -3,6 +3,7 @@ $(document).ready(() => {
     initTimepickers();
     updateDateTime();
     updateBookings();
+    clearForms();
 
     $("#select-room").select2({
         dropdownParent: $("#bookingModal"),
@@ -12,19 +13,16 @@ $(document).ready(() => {
         dropdownParent: $("#bookingModal"),
         width: "resolve",
     });
-    $('#btn-add-booking').click(() => {
-        const today = new Date();
-        $('#form-booking>input[name="date"]').val(today.toISOString().substring(0,10));
-        $("#loginModal").modal("show");
-    });
+    // $('#btn-add-booking').click(() => {
+    //     const today = new Date();
+    //     $('#form-booking>input[name="date"]').val(today.toISOString().substring(0,10));
+    //     $("#loginModal").modal("show");
+    // });
     $('#btn-history-add-booking').click(function(){
         $('#bookingHistoryModal').modal('hide');
         $("#loginModal").modal("show");
     });
-
-    $('#form-login')[0].reset();
-    $('#form-booking')[0].reset();
-
+    
     $("#form-login").submit(checkLogin);
     $('#form-booking').submit(async e => {
         e.preventDefault();
@@ -47,6 +45,8 @@ $(document).ready(() => {
         await $.post($('#form-booking').attr('action'), $('#form-booking').serialize());
         location.reload();
     });
+    
+    $('button[data-bs-dismiss="modal"]').click(clearForms);
 });
 
 async function showBookingHistory(date, dateStr){
@@ -221,6 +221,11 @@ async function checkLogin(e) {
     } else {
         alert("NIS atau Password salah. Silakan coba lagi.");
     }
+}
+
+function clearForms(){
+    $('#form-login')[0].reset();
+    $('#form-booking')[0].reset();
 }
 
 setInterval(updateDateTime, 1000);
