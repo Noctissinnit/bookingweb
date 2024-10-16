@@ -17,6 +17,9 @@ class AdminController extends Controller
     {
         return view("admin.login");
     }
+    public function dashboard(){
+        return view('admin.dashboard');
+    }
     // Tampilkan halaman untuk approve booking
     public function index()
     {
