@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -20,7 +21,10 @@ class UserController extends Controller
             "password" => "required",
         ]);
 
-        User::insert($request->all("name", "email", "nis", "password"));
+        User::insert(array_merge(
+            $request->all("name", "email", "nis"),
+            [ 'password' => Hash::make($request->password) ]
+        ));
 
         return redirect()->route("admin.dashboard");
     }
@@ -34,8 +38,6 @@ class UserController extends Controller
             "nis" => "required|numeric",
         ]);
         
-        Log::debug($request->all());
-
         User::where("id_user", $request->id)->update(
             $request->all("name", "email", "nis")
         );
