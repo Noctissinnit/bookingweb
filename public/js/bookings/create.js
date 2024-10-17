@@ -1,3 +1,5 @@
+let isBookingPost = false;
+
 $(document).ready(() => {
     generateCalendar();
     initTimepickers();
@@ -26,6 +28,8 @@ $(document).ready(() => {
     $("#form-login").submit(checkLogin);
     $('#form-booking').submit(async e => {
         e.preventDefault();
+        if(isBookingPost) return;
+        
         const formData = new FormData(e.currentTarget);
         if(isTimeLess(formData.get("end_time"), formData.get("start_time"))){
             alert("Jam Selesai tidak bisa kurang dari Jam Mulai.");
@@ -42,6 +46,7 @@ $(document).ready(() => {
                 return;
             }
         }
+        isBookingPost = true;
         await $.post($('#form-booking').attr('action'), $('#form-booking').serialize());
         location.reload();
     });
