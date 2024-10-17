@@ -7,17 +7,46 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    public function store(Request $request){
+    public function get(Request $request){
+        return response()->json(User::where('id_user', $request->id)->first(['name', 'email', 'nis']));
+    }
+    
+    public function store(Request $request)
+    {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            'nis' => 'required|numeric',
-            'password' => 'required',
+            "name" => "required",
+            "email" => "required|email",
+            "nis" => "required|numeric",
+            "password" => "required",
+        ]);
+
+        User::insert($request->all("name", "email", "nis", "password"));
+
+        return redirect()->route("admin.dashboard");
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            "id" => "required|numeric",
+            "name" => "required",
+            "email" => "required|email",
+            "nis" => "required|numeric",
         ]);
         
-        User::insert($request->except('_token'));
+        Log::debug($request->all());
+
+        User::where("id_user", $request->id)->update(
+            $request->all("name", "email", "nis")
+        );
+
+        return redirect()->route("admin.dashboard");
+    }
+    
+    public function destroy(int $id){
+        User::where('id_user', $id)->delete();
         
-        return redirect()->route('admin.dashboard');
+        return redirect()->route("admin.dashboard");
     }
     // Tampilkan halaman untuk melakukan booking
     // public function index()
