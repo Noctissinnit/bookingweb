@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\GoogleController;
@@ -34,7 +35,9 @@ Route::group(['middleware' => 'auth'], function () {
     // Route untuk User yang bisa melakukan booking
     // Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
     // Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('rooms.dashboard');
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    
+    Route::post('/admin/user', [UserController::class, 'store'])->name('user.store');
 
     // Route untuk Admin (hanya admin yang bisa mengakses CRUD room dan approve booking)
     Route::get('/admin/rooms', [RoomController::class, 'index'])->name('rooms.index');
