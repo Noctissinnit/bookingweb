@@ -40,7 +40,9 @@ $(document).ready(() => {
         const rooms = await $.get(roomListUrl);
         let bookings = rooms.filter(dat => dat.id === roomId)[0].bookings;
         if(bookings.length > 0){
-            const bookingsToday = bookings.filter(dat => isToday(dat.date));
+            const bookingsToday = bookings.filter(dat => isDateEqual(
+                new Date($('#form-booking>input[name="date"]').val()),
+                new Date(dat.date)));
             if(bookingsToday.some(dat => isTimeRangeOverlap(formData.get("start_time"), formData.get("end_time"), formatTime(dat.start_time), formatTime(dat.end_time)))){
                 alert("Jam peminjaman sudah digunakan oleh user lain.");
                 return;
@@ -118,11 +120,15 @@ function isToday(dateString) {
 
     // Get today's date
     const today = new Date();
+    
+    return isDateEqual(inputDate, today);
+}
 
+function isDateEqual(date1, date2){
     // Check if the input date is today by comparing the year, month, and day
-    return inputDate.getFullYear() === today.getFullYear() &&
-           inputDate.getMonth() === today.getMonth() &&
-           inputDate.getDate() === today.getDate();
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate();
 }
 
 function isTimeRangeOverlap(start1, end1, start2, end2) {
