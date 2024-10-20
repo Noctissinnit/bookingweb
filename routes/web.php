@@ -40,7 +40,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/admin/user', [UserController::class, 'get'])->name('user.get');
     Route::post('/admin/user', [UserController::class, 'store'])->name('user.store');
     Route::put('/admin/user', [UserController::class, 'update'])->name('user.update');
-    Route::get('/admin/user/destroy/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+    Route::get('/admin/user/destroy/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 
     // Route untuk Admin (hanya admin yang bisa mengakses CRUD room dan approve booking)
     Route::get('/admin/rooms', [RoomController::class, 'index'])->name('rooms.index');

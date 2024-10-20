@@ -45,8 +45,8 @@ class UserController extends Controller
         return redirect()->route("admin.dashboard");
     }
     
-    public function destroy(int $id){
-        User::where('id_user', $id)->delete();
+    public function destroy(User $user){
+        $user->delete();
         
         return redirect()->route("admin.dashboard");
     }
