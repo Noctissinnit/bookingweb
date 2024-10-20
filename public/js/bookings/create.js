@@ -28,7 +28,8 @@ $(document).ready(() => {
     $("#form-login").submit(checkLogin);
     $('#form-booking').submit(async e => {
         e.preventDefault();
-        if(isBookingPost) return;
+        if(isBookingPost) return location.reload();
+        isBookingPost = true;
         
         const formData = new FormData(e.currentTarget);
         if(isTimeLess(formData.get("end_time"), formData.get("start_time"))){
@@ -48,7 +49,6 @@ $(document).ready(() => {
                 return;
             }
         }
-        isBookingPost = true;
         await $.post($('#form-booking').attr('action'), $('#form-booking').serialize());
         location.reload();
     });
