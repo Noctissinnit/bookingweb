@@ -35,13 +35,15 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="/">
                     @if(View::hasSection('navbar-title'))
                         @yield('navbar-title')
                     @else
                         {{ config('app.name', 'Booking Meeting Room') }}
                     @endif
                 </a>
+                <a class="nav-link ms-1 mt-1" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                <a class="nav-link ms-3 mt-1" href="{{ route('rooms.index') }}">Rooms</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>

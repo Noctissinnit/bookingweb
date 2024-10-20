@@ -4,24 +4,24 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="my-4">Rooms</h1>
+            <!-- <h1 class="my-4">Rooms</h1> -->
 
             <!-- Tombol Tambah Room -->
             <a href="{{ route('rooms.create') }}" class="btn btn-success mb-3">
-                <i class="fas fa-plus-circle"></i> Add Room
+                <i class="fas fa-plus-circle"></i> Tambah Ruangan
             </a>
 
             <!-- Tabel Daftar Ruangan -->
             <div class="card">
                 <div class="card-header">
-                    <h4 class="mb-0">Room List</h4>
+                    <h4 class="mb-0">List Ruangan</h4>
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-hover table-striped mb-0">
                         <thead>
                             <tr>
-                                <th>Room Name</th>
-                                <th class="text-end">Actions</th>
+                                <th>Nama Ruangan</th>
+                                <th class="text-end">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,7 +39,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="fas fa-trash-alt"></i> Delete
+                                                <i class="fas fa-trash-alt"></i> Hapus
                                             </button>
                                         </form>
                                     </td>

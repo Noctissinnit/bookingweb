@@ -30,7 +30,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // Group route yang hanya bisa diakses setelah user login
-Route::group(['middleware' => 'auth'], function () {
+Route::middleware('auth')->group(function () {
 
     // Route untuk User yang bisa melakukan booking
     // Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');

@@ -7,7 +7,7 @@
             <!-- Card untuk form edit -->
             <div class="card">
                 <div class="card-header">
-                    <h4>Edit Room</h4>
+                    <h4>Edit Ruangan</h4>
                 </div>
                 <div class="card-body">
                     <!-- Tampilkan pesan error jika ada -->
@@ -28,14 +28,14 @@
 
                         <!-- Input Nama Ruangan -->
                         <div class="form-group mb-3">
-                            <label for="name" class="form-label">Room Name</label>
+                            <label for="name" class="form-label">Nama Ruangan</label>
                             <input type="text" name="name" id="name" class="form-control" value="{{ $room->name }}" required>
                         </div>
 
                         <!-- Tombol Submit dan Cancel -->
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('rooms.index') }}" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <a href="{{ route('rooms.index') }}" class="btn btn-secondary">Batal</a>
+                            <button type="submit" class="btn btn-primary">Edit Ruangan</button>
                         </div>
                     </form>
                 </div>
