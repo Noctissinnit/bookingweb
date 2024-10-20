@@ -35,7 +35,8 @@ $(document).ready(() => {
         const formData = new FormData(e.currentTarget);
         if(isTimeLess(formData.get("end_time"), formData.get("start_time"))){
             alert("Jam Selesai tidak bisa kurang dari Jam Mulai.");
-            e.preventDefault();
+            isBookingPost = false;
+            $('#loading').css('display', 'none');
             return;
         }
 
@@ -47,6 +48,8 @@ $(document).ready(() => {
                 new Date(dat.date)));
             if(bookingsToday.some(dat => isTimeRangeOverlap(formData.get("start_time"), formData.get("end_time"), formatTime(dat.start_time), formatTime(dat.end_time)))){
                 alert("Jam peminjaman sudah digunakan oleh user lain.");
+                isBookingPost = false;
+                $('#loading').css('display', 'none');
                 return;
             }
         }
