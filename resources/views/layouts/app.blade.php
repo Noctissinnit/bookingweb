@@ -31,6 +31,7 @@
     @yield('head')
 </head>
 <body>
+    @include('layouts.loading')
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">

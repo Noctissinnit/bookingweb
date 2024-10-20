@@ -29,6 +29,7 @@ $(document).ready(() => {
     $('#form-booking').submit(async e => {
         e.preventDefault();
         if(isBookingPost) return location.reload();
+        $('#loading').css('display', 'flex');
         isBookingPost = true;
         
         const formData = new FormData(e.currentTarget);
