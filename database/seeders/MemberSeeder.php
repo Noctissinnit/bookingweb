@@ -15,8 +15,8 @@ class MemberSeeder extends Seeder
     {
         Member::insert([
             [
-                'name' => 'John Doe',
-                'email' => 'johndoe@gmail.com'
+                'name' => 'Anjing Sedboi',
+                'email' => 'anjingsedboi@gmail.com'
             ],
             [
                 'name' => 'Jane Doe',

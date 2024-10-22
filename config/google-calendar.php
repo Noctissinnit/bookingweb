@@ -13,7 +13,7 @@ return [
             /*
              * Path to the json file containing the credentials.
              */
-            'credentials_json' => storage_path('app/google-calendar/booking-435923-78ab6de8a5d5.json'),
+            'credentials_json' => storage_path('app/google-calendar/booking-web-439401-8d5c29ae48cf.json'),
         ],
 
         /*
