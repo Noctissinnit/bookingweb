@@ -1,40 +1,22 @@
 @extends('layouts.app')
 
+@section('head')
+<link rel="stylesheet" href="/css/home.css">
+@endsection
+
 @section('content')
 <div class="container">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-header">{{ __('Sidebar') }}</div>
-                <div class="list-group list-group-flush">
-                    <!-- Sidebar untuk semua pengguna -->
-                    <a class="list-group-item list-group-item-action">Form Booking Meeting Room</a>
-
-                    <!-- Sidebar hanya untuk admin -->
-                    @if (Auth::user()->role === 'admin')
-                        <a href="{{ route('rooms.index') }}" class="list-group-item list-group-item-action">Rooms</a>
-                        <a href="{{ route('admin.bookings.index') }}" class="list-group-item list-group-item-action">Approve Booking</a>
-                    @endif
+    <h1>Peminjaman Ruang</h1>
+    <div class="card-container">
+        @foreach($rooms as $room)
+            <a href="{{ route('bookings.create', $room->id) }}" class="card">
+                <img src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg" alt="Ruang A">
+                <div class="card-content">
+                    <h2>{{ $room->name }}</h2>
+                    <p>Pilih {{ $room->name }} untuk acara rapat atau pertemuan kecil.</p>
                 </div>
-            </div>
-        </div>
-
-        <!-- Konten Utama -->
-        <div class="col-md-9">
-            <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-                    {{ __('You are logged in!') }}
-                </div>
-            </div>
-        </div>
+            </a>
+        @endforeach
     </div>
 </div>
 @endsection

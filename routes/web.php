@@ -5,14 +5,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Route untuk halaman utama 
-Route::get('/', function () {
-    return redirect()->route('bookings.create', 1);
-});
-
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/admin/login', [AdminController::class, 'indexLogin'])->name('rooms.index-login');
 
@@ -27,7 +25,7 @@ Route::get('/rooms/list', [RoomController::class, 'list'])->name('rooms.list');
 Auth::routes();
 
 // Route untuk dashboard setelah login
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // Group route yang hanya bisa diakses setelah user login
 Route::middleware('auth')->group(function () {
