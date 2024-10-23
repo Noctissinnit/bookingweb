@@ -10,6 +10,7 @@
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
+        "spatie/icalendar-generator": "^2.8",
         "spatie/laravel-google-calendar": "^3.8"
     },
     "require-dev": {
