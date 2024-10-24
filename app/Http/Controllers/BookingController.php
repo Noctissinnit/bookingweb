@@ -8,6 +8,7 @@ use App\Models\Booking;
 use App\Models\Room;
 use App\Models\User;
 use App\Models\Member;
+use App\Models\Department;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Spatie\GoogleCalendar\Event;
@@ -34,7 +35,8 @@ class BookingController extends Controller
         $roomId = $id;
         $room = Room::where('id', $roomId)->first();
         $members = Member::all();
-        return view("bookings.create", compact("room", "roomId", "members"));
+        $departments = Department::all();
+        return view("bookings.create", compact("room", "roomId", "members", 'departments'));
     }
 
     public function login(Request $request)
@@ -78,6 +80,8 @@ class BookingController extends Controller
                 ->route("bookings.create", $request->room_id)
                 ->with("failed", "Booking gagal ditambahkan.");
         }
+        
+        $department = Department::where('id', $request->department)->first()->name;
 
         $booking = Booking::create([
             "user_id" => $user->id,
@@ -88,7 +92,7 @@ class BookingController extends Controller
             "description" => $request->description,
             "nama" => $request->nama,
             "email" => $request->email,
-            "department" => $request->department,
+            "department" => $department,
             // 'approved' => false, // Menunggu approval
             "approved" => true, // Otomatis approve
         ]);

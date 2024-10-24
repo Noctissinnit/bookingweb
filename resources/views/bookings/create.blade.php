@@ -120,7 +120,12 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
             <div class="modal-body">
                 <div class="form-group">
                     <label for="department">Department</label>
-                    <input type="text" class="form-control" name="department" required>
+                    <select id="select-department" class="form-control" name="department" required>
+                        <option>Pilih Department</option>
+                        @foreach($departments as $department)
+                            <option value="{{ $department->id }}">{{ $department->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="row form-group">
                     <div class="col">

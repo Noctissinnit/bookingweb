@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             // RoomSeeder::class,
             MemberSeeder::class,
+            DepartmentSeeder::class,
         ]);
     }
 }
