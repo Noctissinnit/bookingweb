@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('departments', function (Blueprint $table) {
-            $table->id('id_department'); // Kolom id_department sebagai primary key
-            $table->string('nama_department'); // Kolom nama_department
-            $table->timestamps(); // Kolom created_at dan updated_at
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
         });
     }
 

@@ -31,8 +31,8 @@
                 <td>{{ $user->nis }}</td>
                 <td>{{ ucfirst($user->role) }}</td>
                 <td>
-                    <button class="btn btn-warning btn-edit-user" id="{{ $user->id_user }}">Edit</button>
-                    <a href="{{ route('user.destroy', $user->id_user) }}"><button class="btn btn-danger">Hapus</button></a>
+                    <button class="btn btn-warning btn-edit-user" id="{{ $user->id }}">Edit</button>
+                    <a href="{{ route('user.destroy', $user->id) }}"><button class="btn btn-danger">Hapus</button></a>
                 </td>
             </tr>
             @endforeach

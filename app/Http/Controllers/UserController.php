@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     public function get(Request $request){
-        return response()->json(User::where('id_user', $request->id)->first(['name', 'email', 'nis']));
+        return response()->json(User::where('id', $request->id)->first(['name', 'email', 'nis']));
     }
     
     public function store(Request $request)
@@ -38,7 +38,7 @@ class UserController extends Controller
             "nis" => "required|numeric",
         ]);
         
-        User::where("id_user", $request->id)->update(
+        User::where("id", $request->id)->update(
             $request->all("name", "email", "nis")
         );
 

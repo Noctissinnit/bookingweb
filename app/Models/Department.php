@@ -13,7 +13,7 @@ class Department extends Model
 
     // Menentukan kolom yang dapat diisi secara massal
     protected $fillable = [
-        'id_department',
-        'nama_department',
+        'id',
+        'name',
     ];
 }

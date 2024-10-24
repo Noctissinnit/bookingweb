@@ -20,7 +20,7 @@ class BookingController extends Controller
 {
     public function list(Request $request)
     {
-        $bookings = Booking::with('room')->with('user:id_user,nis');
+        $bookings = Booking::with('room')->with('user:id,nis');
         if($request->date) $bookings = $bookings->whereDate('date', $request->date);
         if($request->room_id) $bookings = $bookings->where('room_id', $request->room_id);
         
@@ -80,7 +80,7 @@ class BookingController extends Controller
         }
 
         $booking = Booking::create([
-            "user_id" => $user->id_user,
+            "user_id" => $user->id,
             "room_id" => $request->room_id,
             "date" => $request->date,
             "start_time" => $request->start_time,
