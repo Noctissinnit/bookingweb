@@ -45,7 +45,7 @@ class InvitationMail extends Mailable
             ->event($event)->get();
         
         $filename = Str::uuid().'.ics';
-        Storage::put($filename, $calendar);
+        Storage::put('calendars/'.$filename, $calendar);
         
         return $filename;
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Room;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class RoomController extends Controller
 {
@@ -26,9 +27,15 @@ class RoomController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'image' => 'required|image',
+            'description' => 'required'
         ]);
+        $image = $request->image->store('images', ['disk' => 'public']);
 
-        Room::create($request->all());
+        Room::create(array_merge(
+            $request->all('name', 'description'),
+            [ 'image' => $image ]
+        ));
         return redirect()->route('rooms.index')->with('success', 'Room created successfully.');
     }
 
@@ -41,15 +48,25 @@ class RoomController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'image' => 'nullable|image',
+            'description' => 'required'
         ]);
+        
+        $fields = $request->all('name', 'description');
+        if($request->has('image')){
+            $image = $request->image->store('images', ['disk' => 'public']);
+            Storage::disk('public')->delete($room->image);
+            $fields = array_merge($fields, ['image' => $image]);
+        }
 
-        $room->update($request->all());
+        $room->update($fields);
         return redirect()->route('rooms.index')->with('success', 'Room updated successfully.');
     }
 
     // Hapus room (Admin only)
     public function destroy(Room $room)
     {
+        Storage::disk('public')->delete($room->image);
         $room->delete();
         return redirect()->route('rooms.index')->with('success', 'Room deleted successfully.');
     }

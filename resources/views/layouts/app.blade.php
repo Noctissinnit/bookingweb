@@ -42,8 +42,10 @@
                         {{ config('app.name', 'Booking Meeting Room') }}
                     @endif
                 </a>
-                <a class="nav-link ms-1 mt-1" href="{{ route('admin.dashboard') }}">Dashboard</a>
-                <a class="nav-link ms-3 mt-1" href="{{ route('rooms.index') }}">Rooms</a>
+                @auth
+                    <a class="nav-link ms-1 mt-1" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                    <a class="nav-link ms-3 mt-1" href="{{ route('rooms.index') }}">Rooms</a>
+                @endauth
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
