@@ -19,8 +19,8 @@ class MemberSeeder extends Seeder
                 'email' => 'anjingsedboi@gmail.com'
             ],
             [
-                'name' => 'Jane Doe',
-                'email' => 'janedoe@gmail.com'
+                'name' => 'Noctis Yoru',
+                'email' => 'ncts.yoru@gmail.com'
             ]
         ]);
     }

@@ -15,6 +15,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Support\Facades\Storage;
+use Spatie\IcalendarGenerator\Enums\ParticipationStatus;
+use Spatie\IcalendarGenerator\Properties\TextProperty;
 
 class InvitationMail extends Mailable
 {
@@ -40,12 +42,17 @@ class InvitationMail extends Mailable
             ->address($booking->room->name)
             ->description($booking->description)
             ->organizer($booking->email);
+
+        foreach($booking->members as $member){
+            $event = $event->attendee($member->email, $member->name, ParticipationStatus::needs_action());
+        }
             
         $calendar = Calendar::create()
+            ->appendProperty(TextProperty::create('METHOD', 'REQUEST'))
             ->event($event)->get();
         
-        $filename = Str::uuid().'.ics';
-        Storage::put('calendars/'.$filename, $calendar);
+        $filename = 'calendars/'.Str::uuid().'.ics';
+        Storage::put($filename, $calendar);
         
         return $filename;
     }

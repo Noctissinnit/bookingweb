@@ -11,10 +11,8 @@ use App\Models\Member;
 use App\Models\Department;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Spatie\GoogleCalendar\Event;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use App\Mail\InvitationMail;
 
 class BookingController extends Controller
@@ -97,7 +95,7 @@ class BookingController extends Controller
             "approved" => true, // Otomatis approve
         ]);
         if($request->members) $booking->members()->sync($request->members);
-        
+
         $members = Booking::where('id', $booking->id)->first()->members;
         foreach($members as $member){
             Mail::to($member)->send(new InvitationMail($booking, $member));

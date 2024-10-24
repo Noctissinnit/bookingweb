@@ -12,8 +12,8 @@ class RoomSeeder extends Seeder
      */
     public function run()
     {
-        Room::create(['name' => 'Room A']);
-        Room::create(['name' => 'Room B']);
-        Room::create(['name' => 'Room C']);
+        Room::create(['name' => 'Room A', 'description' => 'Room A untuk A']);
+        Room::create(['name' => 'Room B', 'description' => 'Room B untuk B']);
+        Room::create(['name' => 'Room C', 'description' => 'Room C untuk C']);
     }
 }
