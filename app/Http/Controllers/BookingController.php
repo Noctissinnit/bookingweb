@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Room;
 use App\Models\User;
-use App\Models\Member;
 use App\Models\Department;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -20,11 +19,11 @@ class BookingController extends Controller
     public function list(Request $request)
     {
         $bookings = Booking::with('room')->with('user:id,nis');
-        if($request->date) $bookings = $bookings->whereDate('date', $request->date);
-        if($request->room_id) $bookings = $bookings->where('room_id', $request->room_id);
-        
+        if ($request->date) $bookings = $bookings->whereDate('date', $request->date);
+        if ($request->room_id) $bookings = $bookings->where('room_id', $request->room_id);
+
         $bookings = $bookings->get();
-        
+
         return response()->json($bookings);
     }
     // Hanya menampilkan form booking untuk user biasa
@@ -32,9 +31,9 @@ class BookingController extends Controller
     {
         $roomId = $id;
         $room = Room::where('id', $roomId)->first();
-        $members = Member::all();
+        $users = User::all();
         $departments = Department::all();
-        return view("bookings.create", compact("room", "roomId", "members", 'departments'));
+        return view("bookings.create", compact("room", "roomId", "users", 'departments'));
     }
 
     public function login(Request $request)
@@ -69,7 +68,7 @@ class BookingController extends Controller
             "nama" => "required",
             "email" => "required",
             "department" => "required",
-            "members" => "nullable",
+            "users" => "nullable",
         ]);
 
         $user = User::where("nis", $request->nis)->first();
@@ -78,7 +77,7 @@ class BookingController extends Controller
                 ->route("bookings.create", $request->room_id)
                 ->with("failed", "Booking gagal ditambahkan.");
         }
-        
+
         $department = Department::where('id', $request->department)->first()->name;
 
         $booking = Booking::create([
@@ -94,29 +93,30 @@ class BookingController extends Controller
             // 'approved' => false, // Menunggu approval
             "approved" => true, // Otomatis approve
         ]);
-        if($request->members) $booking->members()->sync($request->members);
+        if ($request->users) $booking->users()->sync($request->users);
 
-        $members = Booking::where('id', $booking->id)->first()->members;
-        foreach($members as $member){
-            Mail::to($member)->send(new InvitationMail($booking, $member));
+        $users = Booking::where('id', $booking->id)->first()->users;
+        foreach ($users as $user) {
+            Mail::to($user)->send(new InvitationMail($booking, $user));
         }
 
         return redirect()
             ->route("bookings.create", $request->room_id)
             ->with("success", "Booking berhasil ditambahkan.");
     }
-    
-    public function destroy(Request $request){
+
+    public function destroy(Request $request)
+    {
         if (Auth::user()->role !== "admin") {
             return redirect()
                 ->route("home")
                 ->with("error", "Unauthorized access");
         }
-        
+
         $booking = Booking::where('id', $request->id);
         $roomId = $booking->first()->room_id;
         $booking->delete();
-        
+
         return redirect()
             ->route("bookings.create", $roomId)
             ->with("success", "Booking berhasil dihapus.");

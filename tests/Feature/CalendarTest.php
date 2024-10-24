@@ -26,7 +26,7 @@ class CalendarTest extends TestCase
             'nama' => 'Admin User',
             'email' => 'admin@example.com',
             'department' => 1,
-            'members' => [1]
+            'users' => [1]
         ]);
         Log::debug($response->baseResponse);
         $response->assertStatus(200);

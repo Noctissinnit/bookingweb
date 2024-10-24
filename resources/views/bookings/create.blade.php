@@ -138,10 +138,10 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="members[]">Peserta</label>
-                    <select name="members[]" id="select-members" multiple class="form-control" style="width: 100%">
-                        @foreach($members as $member)
-                            <option value="{{ $member->id }}">{{ $member->name }}</option>
+                    <label for="users[]">Peserta</label>
+                    <select name="users[]" id="select-users" multiple class="form-control" style="width: 100%">
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
                     </select>
                 </div>

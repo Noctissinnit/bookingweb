@@ -11,7 +11,7 @@ $(document).ready(() => {
         dropdownParent: $("#bookingModal"),
         width: "resolve",
     });
-    $("#select-members").select2({
+    $("#select-users").select2({
         dropdownParent: $("#bookingModal"),
         width: "resolve",
     });

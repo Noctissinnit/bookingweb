@@ -7,8 +7,8 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Booking; 
-use App\Models\Member; 
+use App\Models\Booking;
+use App\Models\User;
 use Spatie\IcalendarGenerator\Components\Event;
 use Spatie\IcalendarGenerator\Components\Calendar;
 use Carbon\Carbon;
@@ -27,33 +27,32 @@ class InvitationMail extends Mailable
      */
     public function __construct(
         protected Booking $booking,
-        protected Member $member
-    )
-    {
+        protected User $user
+    ) {
         //
     }
-    
+
     public function generateCalendar(): string
     {
         $booking = $this->booking;
-        $event = Event::create('Booking Invitation '.$booking->department)
-            ->startsAt(Carbon::parse($booking->date.' '.$booking->start_time))
-            ->endsAt(Carbon::parse($booking->date.' '.$booking->end_time))
+        $event = Event::create('Booking Invitation ' . $booking->department)
+            ->startsAt(Carbon::parse($booking->date . ' ' . $booking->start_time))
+            ->endsAt(Carbon::parse($booking->date . ' ' . $booking->end_time))
             ->address($booking->room->name)
             ->description($booking->description)
             ->organizer($booking->email);
 
-        foreach($booking->members as $member){
-            $event = $event->attendee($member->email, $member->name, ParticipationStatus::needs_action());
+        foreach ($booking->users as $user) {
+            $event = $event->attendee($user->email, $user->name, ParticipationStatus::needs_action());
         }
-            
+
         $calendar = Calendar::create()
             ->appendProperty(TextProperty::create('METHOD', 'REQUEST'))
             ->event($event)->get();
-        
-        $filename = 'calendars/'.Str::uuid().'.ics';
+
+        $filename = 'calendars/' . Str::uuid() . '.ics';
         Storage::put($filename, $calendar);
-        
+
         return $filename;
     }
 
@@ -74,7 +73,7 @@ class InvitationMail extends Mailable
     {
         return new Content(
             view: 'emails.invitation',
-            with: [ 'member' => $this->member, 'booking' => $this->booking ]
+            with: ['user' => $this->user, 'booking' => $this->booking]
         );
     }
 
