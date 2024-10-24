@@ -17,7 +17,7 @@ class Booking extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'booking_users', 'id_booking');
+        return $this->belongsToMany(User::class, 'booking_users', 'id_booking', 'id_user');
     }
 
     public function user()

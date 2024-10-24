@@ -10,7 +10,7 @@
     <div class="card-container">
         @foreach($rooms as $room)
             <a href="{{ route('bookings.create', $room->id) }}" class="card">
-                <img src="{{ Storage::url($room->image) }}" alt="Ruang A">
+                <img src="{{ Storage::url($room->image) }}" alt="{{ $room->name }}">
                 <div class="card-content">
                     <h2>{{ $room->name }}</h2>
                     <p>{{ $room->description }}</p>
