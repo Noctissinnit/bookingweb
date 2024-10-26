@@ -17,6 +17,7 @@ use Google\Client as GoogleClient;
 use Google\Service\Calendar as GoogleCalendar;
 use Google\Service\Calendar\Event;
 use Google\Service\Calendar\EventDateTime;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
@@ -101,6 +102,7 @@ class BookingController extends Controller
         $users = Booking::where('id', $booking->id)->first()->users;
 
         $accessToken = session('google_access_token');
+        Log::debug('Google Access Token: '.$accessToken);
         if (!$accessToken) {
             return response()->json(['error' => 'No access token found. Please authenticate.'], 401);
         }

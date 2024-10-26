@@ -46,6 +46,6 @@ return [
         'calendar_id' => env('GOOGLE_CALENDAR_ID'),
         'approval_prompt' => env('GOOGLE_APPROVAL_PROMPT', 'force'),
         'access_type' => env('GOOGLE_ACCESS_TYPE', 'offline'),
-        'include_granted_scopes' => true,
+        'include_granted_scopes' => "true",
     ],
 ];

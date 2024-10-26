@@ -24,6 +24,7 @@ const roomListUrl = "{{ route('rooms.list') }}";
 const loginUrl = "{{ route('bookings.login') }}";
 const storeUrl = "{{ route('bookings.store') }}";
 const destroyUrl = "{{ route('bookings.destroy') }}";
+const googleLoginUrl = "{{ route('google.login') }}";
 </script>
 <script src="/js/bookings/create.js"></script>
 @endsection
@@ -60,7 +61,6 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
                 <table id="bookingHistoryTable" class="table table-bordered">
                     <thead>
                         <tr>
-
                             <th>Divisi</th>
                             <th>Jam mulai</th>
                             <th>Jam selesai</th>
@@ -71,8 +71,10 @@ const destroyUrl = "{{ route('bookings.destroy') }}";
                 </table>
             </div>
             <div class="modal-footer">
-
-                <button id="btn-history-add-booking" class="btn btn-primary" date="">Tambah Peminjaman</button>
+                <button id="btn-history-add-booking" class="btn btn-primary text-center" date="">
+                    <img width="28" src="/images/google.webp">
+                    <span>Tambah Peminjaman</span>
+                </button>
             </div>
         </div>
     </div>

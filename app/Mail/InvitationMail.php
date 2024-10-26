@@ -84,9 +84,9 @@ class InvitationMail extends Mailable
      */
     public function attachments(): array
     {
-        $filename = $this->generateCalendar();
+        // $filename = $this->generateCalendar();
         return [
-            Attachment::fromStorageDisk('local', $filename)->as('invite.ics')->withMime('text/calendar;charset=UTF-8;method=REQUEST')
+            // Attachment::fromStorageDisk('local', $filename)->as('invite.ics')->withMime('text/calendar;charset=UTF-8;method=REQUEST')
         ];
     }
 }

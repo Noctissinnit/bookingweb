@@ -6,6 +6,7 @@ $(document).ready(() => {
     updateDateTime();
     updateBookings();
     clearForms();
+    tryGoogleCallback();
 
     $("#select-room").select2({
         dropdownParent: $("#bookingModal"),
@@ -21,8 +22,10 @@ $(document).ready(() => {
     //     $("#loginModal").modal("show");
     // });
     $('#btn-history-add-booking').click(function(){
-        $('#bookingHistoryModal').modal('hide');
-        $("#loginModal").modal("show");
+        const url = new URL(googleLoginUrl);
+        url.searchParams.set('bookings_room_id', roomId);
+        url.searchParams.set('bookings_date', $('#form-booking>input[name="date"]').val());
+        location.href = url.toString();
     });
     
     $("#form-login").submit(checkLogin);
@@ -75,8 +78,6 @@ async function showBookingHistory(date, dateStr){
         bookingsData.forEach((data, i) => {
             tableBody.append(`
                 <tr>
-
-
                     <td>${data.department}</td>
                     <td>${formatTime(data.start_time)}</td>
                     <td>${formatTime(data.end_time)}</td>
@@ -241,6 +242,14 @@ async function checkLogin(e) {
 function clearForms(){
     $('#form-login')[0].reset();
     $('#form-booking')[0].reset();
+}
+
+function tryGoogleCallback(){
+    const url = new URL(location.href);
+    if(!url.searchParams.has('date')) return;
+    
+    $('#form-booking>input[name="date"]').val(url.searchParams.get('date'));
+    $('#loginModal').modal('show');
 }
 
 setInterval(updateDateTime, 1000);

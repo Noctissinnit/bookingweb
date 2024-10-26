@@ -3,15 +3,24 @@ namespace App\Http\Controllers;
 
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class GoogleController extends Controller
 {
     /**
      * Redirect the user to the Google authentication page.
      */
-    public function redirectToGoogle()
+    public function redirectToGoogle(Request $request)
     {
+        if($request->has('bookings_date')){
+            $request->session()->put('google_bookings_date', $request->bookings_date);
+            $request->session()->save();
+        }
+        if($request->has('bookings_room_id')){
+            $request->session()->put('google_bookings_room_id', $request->bookings_room_id);
+            $request->session()->save();
+        }
         return Socialite::driver('google')->with([
             'approval_prompt' => config('services.google.approval_prompt'),
             'access_type' => config('services.google.access_type'),
@@ -22,39 +31,25 @@ class GoogleController extends Controller
     /**
      * Obtain the user information from Google.
      */
-    public function handleGoogleCallback()
+    public function handleGoogleCallback(Request $request)
     {
-        try {
-            // Ambil data user dari Google
-            $googleUser = Socialite::driver('google')->stateless()->user();
-            // Simpan token akses ke sesi atau ke database
-            session(['google_access_token' => $googleUser->token]);
-            // Cari user berdasarkan email dari Google
-            $user = User::where('email', $googleUser->getEmail())->first();
-
-            if ($user) {
-                // Jika user sudah ada di database, login otomatis
-                Auth::login($user);
-            } else {
-                // Jika user belum ada, buat user baru
-                $newUser = User::create([
-                    'name' => $googleUser->getName(),
-                    'email' => $googleUser->getEmail(),
-                    'google_id' => $googleUser->getId(),
-                    'password' => bcrypt('password'), // Set password default (tidak akan digunakan)
-                    'role' => 'user', // Atur default role sebagai 'user'
-                ]);
-
-                // Login otomatis user baru
-                Auth::login($newUser);
+        $googleUser = Socialite::driver('google')->user();
+        $user = User::where('email', $googleUser->getEmail());
+        if(!$user->exists()){
+            if(session('google_bookings_date')){
+                return redirect()->route('bookings.create')->with('error', 'Email user tidak dapat ditemukan di database!');
             }
-
-            // Redirect ke halaman home setelah login berhasil
-            return redirect()->route('home');
-
-        } catch (\Exception $e) {
-            // Handle jika terjadi error
-            return redirect('/login')->with('error', 'Something went wrong while logging in with Google.');
         }
+
+        if(session('google_bookings_date')){
+            $request->session()->put('google_access_token', $googleUser->token);
+            $request->session()->save();
+            return redirect()->route('bookings.create', [
+                'id' => session('google_bookings_room_id'),
+                'date' => session('google_bookings_date')
+            ]);
+        }
+
+        return redirect()->route('home');
     }
 }

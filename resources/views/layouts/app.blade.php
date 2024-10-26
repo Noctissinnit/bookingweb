@@ -32,6 +32,16 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script src="/js/app.js"></script>
+    
+    <script>
+        @if ($errors->any())
+            alert({
+                title: "Error",
+                text: "{{ $errors->all()[0] }}",
+                icon: "error"
+            });
+        @endif
+    </script>
 
     @yield('head')
 </head>

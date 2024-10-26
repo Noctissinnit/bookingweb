@@ -56,7 +56,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Route untuk Google OAuth Login (menggunakan Socialite)
-Route::get('login/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('login/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('login/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 // use Spatie\GoogleCalendar\Event;
