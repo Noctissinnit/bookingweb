@@ -23,8 +23,8 @@ class CalendarTest extends TestCase
             'start_time' => '07:00',
             'end_time' => '09:00',
             'description' => 'Booking',
-            'nama' => 'Admin User',
-            'email' => 'admin@example.com',
+            'nama' => 'Anjing Sedboi',
+            'email' => 'anjingsedboi@gmail.com',
             'department' => 1,
             'users' => [1]
         ]);

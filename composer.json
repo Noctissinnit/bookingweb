@@ -6,12 +6,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "google/apiclient": "^2.15.0",
         "laravel/framework": "^11.9",
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
-        "spatie/icalendar-generator": "^2.8",
-        "spatie/laravel-google-calendar": "^3.8"
+        "spatie/icalendar-generator": "^2.8"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +12,11 @@ class GoogleController extends Controller
      */
     public function redirectToGoogle()
     {
-        return Socialite::driver('google')->scopes(['https://www.googleapis.com/auth/calendar'])->redirect();
+        return Socialite::driver('google')->with([
+            'approval_prompt' => config('services.google.approval_prompt'),
+            'access_type' => config('services.google.access_type'),
+            'include_granted_scopes' => config('services.google.include_granted_scopes'),
+        ])->scopes(['https://www.googleapis.com/auth/calendar'])->redirect();
     }
 
     /**

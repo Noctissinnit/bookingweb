@@ -36,10 +36,16 @@ return [
     ],
 
     'google' => [
-    'client_id' => env('GOOGLE_CLIENT_ID'),
-    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-    'redirect' => env('GOOGLE_REDIRECT_URL'),
-    'calendar_id' => env('GOOGLE_CALENDAR_ID'), // tambahkan calendar id di sini
-],
-
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'project_id' => env('GOOGLE_PROJECT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URL'),
+        'auth_uri' => 'https://accounts.google.com/o/oauth2/auth',
+        'token_uri' => 'https://oauth2.googleapis.com/token',
+        'auth_provider_x509_cert_url' => 'https://www.googleapis.com/oauth2/v1/certs',
+        'calendar_id' => env('GOOGLE_CALENDAR_ID'),
+        'approval_prompt' => env('GOOGLE_APPROVAL_PROMPT', 'force'),
+        'access_type' => env('GOOGLE_ACCESS_TYPE', 'offline'),
+        'include_granted_scopes' => true,
+    ],
 ];
