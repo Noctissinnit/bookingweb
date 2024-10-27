@@ -33,7 +33,7 @@ class GoogleController extends Controller
      */
     public function handleGoogleCallback(Request $request)
     {
-        $googleUser = Socialite::driver('google')->user();
+        $googleUser = Socialite::driver('google')->stateless()->user();
         $user = User::where('email', $googleUser->getEmail());
         if(!$user->exists()){
             if(session('google_bookings_date')){
