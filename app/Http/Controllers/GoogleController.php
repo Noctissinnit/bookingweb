@@ -33,11 +33,11 @@ class GoogleController extends Controller
      */
     public function handleGoogleCallback(Request $request)
     {
-        $googleUser = Socialite::driver('google')->stateless()->user();
+        $googleUser = Socialite::driver('google')->user();
         $user = User::where('email', $googleUser->getEmail());
         if(!$user->exists()){
             if(session('google_bookings_date')){
-                return redirect()->route('bookings.create')->with('error', 'Email user tidak dapat ditemukan di database!');
+                return redirect()->route('bookings.create', ['id' => session('google_bookings_room_id')])->with('error', 'Email user tidak dapat ditemukan di database!');
             }
         }
 
