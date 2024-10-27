@@ -41,6 +41,14 @@
                 icon: "error"
             });
         @endif
+
+        @if (session()->has('success'))
+            alert({
+                title: "Berhasil",
+                text: "{{ session('success') }}",
+                icon: "success"
+            });
+        @endif
     </script>
 
     @yield('head')
