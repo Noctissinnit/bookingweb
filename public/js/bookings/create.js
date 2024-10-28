@@ -231,6 +231,8 @@ async function checkLogin(e) {
         $('#form-booking>input[name="password"]').val(password);
         $('#form-booking>input[name="nama"]').val(res.data.name);
         $('#form-booking>input[name="email"]').val(res.data.email);
+        $('#form-booking>input[name="department_id"]').val(res.data.department.id);
+        $('#booking-user-department').val(res.data.department.name);
 
         $("#loginModal").modal("hide");
         $("#bookingModal").modal("show");

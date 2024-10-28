@@ -21,8 +21,8 @@ class UserController extends Controller
             "password" => "required",
         ]);
 
-        User::insert(array_merge(
-            $request->all("name", "email", "nis"),
+        User::create(array_merge(
+            $request->all("name", "email", "nis", "department_id"),
             [ 'password' => Hash::make($request->password) ]
         ));
 
@@ -39,7 +39,7 @@ class UserController extends Controller
         ]);
         
         User::where("id", $request->id)->update(
-            $request->all("name", "email", "nis")
+            $request->all("name", "email", "nis", "department_id")
         );
 
         return redirect()->route("admin.dashboard");

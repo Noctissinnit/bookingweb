@@ -47,15 +47,12 @@ class BookingController extends Controller
             "nis" => ["required"],
             "password" => ["required"],
         ]);
-        $user = User::where("nis", $request->nis)->first();
+        $user = User::where("nis", $request->nis)->with('department')->first();
         $success = $user !== null && Hash::check($request->password, $user->password);
 
         return response()->json([
             "success" => $success,
-            "data" => $success ? [
-                "email" => $user->email,
-                "name" => $user->name,
-            ] : null
+            "data" => $success ? $user : null
         ]);
     }
 
@@ -70,9 +67,7 @@ class BookingController extends Controller
             "start_time" => "required",
             "end_time" => "required",
             "description" => "required",
-            "nama" => "required",
-            "email" => "required",
-            "department" => "required",
+            "department_id" => "required|numeric",
             "users" => "nullable",
         ]);
 
@@ -83,26 +78,15 @@ class BookingController extends Controller
                 ->with("failed", "Booking gagal ditambahkan.");
         }
 
-        $department = Department::where('id', $request->department)->first()->name;
-
-        $booking = Booking::create([
+        $booking = Booking::create(array_merge($request->all('room_id', 'date', 'start_time', 'end_time', 'description', 'department_id'), [
             "user_id" => $user->id,
-            "room_id" => $request->room_id,
-            "date" => $request->date,
-            "start_time" => $request->start_time,
-            "end_time" => $request->end_time,
-            "description" => $request->description,
-            "nama" => $request->nama,
-            "email" => $request->email,
-            "department" => $department,
             // 'approved' => false, // Menunggu approval
             "approved" => true, // Otomatis approve
-        ]);
+        ]));
         if ($request->users) $booking->users()->sync($request->users);
         $users = Booking::where('id', $booking->id)->first()->users;
 
         $accessToken = session('google_access_token');
-        Log::debug('Google Access Token: '.$accessToken);
         if (!$accessToken) {
             return response()->json(['error' => 'No access token found. Please authenticate.'], 401);
         }

@@ -14,9 +14,9 @@ class UserJabatan extends Model
 
     // Menentukan kolom yang dapat diisi secara massal
     protected $fillable = [
-        'id_user_jabatan',
-        'id_user',
-        'id_jabatan',
-        'id_department',
+        'id',
+        'user_id',
+        'jabatan_id',
+        'department_id',
     ];
 }

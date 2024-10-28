@@ -9,6 +9,7 @@ use App\Notifications\BookingApprovedNotification;
 use App\Models\Room;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\BookingApprovedMail;
+use App\Models\Department;
 use Illuminate\Support\Facades\Mail;
 use Spatie\GoogleCalendar\Event;
 use Carbon\Carbon;
@@ -20,7 +21,8 @@ class AdminController extends Controller
     }
     public function dashboard(){
         $users = User::all();
-        return view('admin.dashboard', compact('users'));
+        $departments = Department::all();
+        return view('admin.dashboard', compact('users', 'departments'));
     }
     // Tampilkan halaman untuk approve booking
     public function index()

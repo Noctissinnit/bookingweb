@@ -115,6 +115,7 @@ const googleLoginUrl = "{{ route('google.login') }}";
             <input type="hidden" name="nama">
             <input type="hidden" name="email">
             <input type="hidden" name="room_id">
+            <input type="hidden" name="department_id">
             <div class="modal-header">
                 <h5 class="modal-title" id="bookingModalLabel">Tambah Peminjaman</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -122,12 +123,7 @@ const googleLoginUrl = "{{ route('google.login') }}";
             <div class="modal-body">
                 <div class="form-group">
                     <label for="department">Department</label>
-                    <select id="select-department" class="form-control" name="department" required>
-                        <option>Pilih Department</option>
-                        @foreach($departments as $department)
-                            <option value="{{ $department->id }}">{{ $department->name }}</option>
-                        @endforeach
-                    </select>
+                    <input id="booking-user-department" class="form-control" placeholder="Department" readonly/>
                 </div>
                 <div class="row form-group">
                     <div class="col">

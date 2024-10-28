@@ -61,6 +61,14 @@
                 <div class="form-group">
                     <input type="password" class="form-control" placeholder="Password" name="password" required/>
                 </div>
+                <div class="form-group">
+                    <select type="password" class="form-control" name="department_id" required>
+                        <option>Pilih Department</option>
+                        @foreach ($departments as $department)
+                            <option value="{{ $department->id }}">{{ $department->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

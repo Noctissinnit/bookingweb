@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('user_jabatans', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_jabatan');
-            $table->unsignedBigInteger('id_department');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('jabatan_id');
+            $table->unsignedBigInteger('department_id');
 
-            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('id_jabatan')->references('id')->on('jabatans')->onDelete('cascade');
-            $table->foreign('id_department')->references('id')->on('departments')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('jabatan_id')->references('id')->on('jabatans')->onDelete('cascade');
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
 
             $table->timestamps();
         });

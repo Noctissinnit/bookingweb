@@ -40,7 +40,7 @@ class InvitationMail extends Mailable
             ->endsAt(Carbon::parse($booking->date . ' ' . $booking->end_time))
             ->address($booking->room->name)
             ->description($booking->description)
-            ->organizer($booking->email);
+            ->organizer($booking->user->email);
 
         foreach ($booking->users as $user) {
             $event = $event->attendee($user->email, $user->name, ParticipationStatus::needs_action());
@@ -84,9 +84,9 @@ class InvitationMail extends Mailable
      */
     public function attachments(): array
     {
-        // $filename = $this->generateCalendar();
+        $filename = $this->generateCalendar();
         return [
-            // Attachment::fromStorageDisk('local', $filename)->as('invite.ics')->withMime('text/calendar;charset=UTF-8;method=REQUEST')
+            Attachment::fromStorageDisk('local', $filename)->as('invite.ics')->withMime('text/calendar;charset=UTF-8;method=REQUEST')
         ];
     }
 }

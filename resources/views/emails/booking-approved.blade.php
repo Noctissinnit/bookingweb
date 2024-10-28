@@ -10,7 +10,7 @@
     <p>Booking details:</p>
     <ul>
         <li>Name: {{ $booking->nama }}</li>
-        <li>Email: {{ $booking->email }}</li>
+        <li>Email: {{ $booking->user->email }}</li>
         <li>Department: {{ $booking->department }}</li>
         <li>Date: {{ $booking->date }}</li>
         <li>Start Time: {{ $booking->start_time }}</li>

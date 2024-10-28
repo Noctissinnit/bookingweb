@@ -13,7 +13,7 @@ class Jabatan extends Model
 
     // Menentukan kolom yang dapat diisi secara massal
     protected $fillable = [
-        'id_jabatan',
-        'nama_jabatan',
+        'jabatan_id',
+        'name',
     ];
 }
