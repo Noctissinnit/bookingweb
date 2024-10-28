@@ -202,7 +202,7 @@ async function updateBookings() {
         bookingsData.forEach((booking, index) => {
             currentBookingsDiv.append(`
             <div>
-                <span>Dipinjam oleh ${booking.nama} dari ${formatTime(booking.start_time)} hingga ${formatTime(booking.end_time)}</span>
+                <span>Dipinjam oleh ${booking.user.name} dari ${formatTime(booking.start_time)} hingga ${formatTime(booking.end_time)}</span>
                 ${isAuth ? `<a href="${destroyUrl}?id=${booking.id}"><button class="btn btn-danger btn-sm ml-2">Hapus</button></a>` : ""}
             </div>
             `);
@@ -247,10 +247,9 @@ function clearForms(){
 }
 
 function tryGoogleCallback(){
-    const url = new URL(location.href);
-    if(!url.searchParams.has('date')) return;
+    if(!bookingsDate) return;
     
-    $('#form-booking>input[name="date"]').val(url.searchParams.get('date'));
+    $('#form-booking>input[name="date"]').val(bookingsDate);
     $('#loginModal').modal('show');
 }
 

@@ -46,8 +46,7 @@ class GoogleController extends Controller
                 $request->session()->put('google_access_token', $googleUser->token);
                 $request->session()->save();
                 return redirect()->route('bookings.create', [
-                    'id' => session('google_bookings_room_id'),
-                    'date' => session('google_bookings_date')
+                    'id' => session('google_bookings_room_id')
                 ]);
             }
 

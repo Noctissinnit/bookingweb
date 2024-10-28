@@ -18,6 +18,7 @@
 <script>
 const isAuth = @if(Auth::check()) true @else false @endif;
 const roomId = {{ $roomId }};
+const bookingsDate = "{{ session('google_bookings_date') }}";
 
 const listUrl = "{{ route('bookings.list') }}";
 const roomListUrl = "{{ route('rooms.list') }}";
@@ -25,6 +26,7 @@ const loginUrl = "{{ route('bookings.login') }}";
 const storeUrl = "{{ route('bookings.store') }}";
 const destroyUrl = "{{ route('bookings.destroy') }}";
 const googleLoginUrl = "{{ route('google.login') }}";
+
 </script>
 <script src="/js/bookings/create.js"></script>
 @endsection

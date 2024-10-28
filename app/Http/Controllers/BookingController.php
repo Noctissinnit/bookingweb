@@ -23,7 +23,7 @@ class BookingController extends Controller
 {
     public function list(Request $request)
     {
-        $bookings = Booking::with('room')->with('user:id,nis');
+        $bookings = Booking::with('room')->with('user:id,nis,name');
         if ($request->date) $bookings = $bookings->whereDate('date', $request->date);
         if ($request->room_id) $bookings = $bookings->where('room_id', $request->room_id);
 
@@ -90,42 +90,44 @@ class BookingController extends Controller
         if (!$accessToken) {
             return response()->json(['error' => 'No access token found. Please authenticate.'], 401);
         }
-        
-    
-        // Initialize the Google Client
+
+        // Remove all sessions
+        $request->session()->remove('google_access_token');
+        $request->session()->remove('google_bookings_date');
+        $request->session()->remove('google_bookings_room_id');
+
+        // Create calendar
         $client = new GoogleClient();
         $client->setAccessToken($accessToken);
-    
-        // Initialize Google Calendar service
+
         $calendarService = new GoogleCalendar($client);
         $attendees = [];
-        foreach($booking->users as $user){
+        foreach ($booking->users as $user) {
             $attendees[] = ['email' => $user->email];
         }
-    
+
         $event = new Event([
             'summary' => 'Booking Invitation',
             'description' => $booking->description,
             'start' => new EventDateTime([
-                'dateTime' => Carbon::parse($booking->date.' '.$booking->start_time),  // Replace with desired start date & time
-                'timeZone' => env('APP_TIMEZONE', 'Asia/Jakarta'),          // Adjust to desired timezone
+                'dateTime' => Carbon::parse($booking->date . ' ' . $booking->start_time),
+                'timeZone' => env('APP_TIMEZONE', 'Asia/Jakarta'),
             ]),
             'end' => new EventDateTime([
-                'dateTime' => Carbon::parse($booking->date.' '.$booking->end_time),  // Replace with desired end date & time
-                'timeZone' => env('APP_TIMEZONE', 'Asia/Jakarta'),         // Adjust to desired timezone
+                'dateTime' => Carbon::parse($booking->date . ' ' . $booking->end_time),
+                'timeZone' => env('APP_TIMEZONE', 'Asia/Jakarta'),
             ]),
             'attendees' => $attendees,
         ]);
-    
+
         try {
-            // Insert the event into the user's primary calendar
             $calendarService->events->insert('primary', $event);
             return response()->json(['success' => 'Event created successfully.']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to create event: ' . $e->getMessage()], 500);
         }
 
-        foreach ($users as $user){
+        foreach ($users as $user) {
             $event->addAttendee(['email' => $user->email]);
         }
         $event->save();
