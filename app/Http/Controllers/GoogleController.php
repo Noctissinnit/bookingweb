@@ -33,7 +33,10 @@ class GoogleController extends Controller
      */
     public function handleGoogleCallback(Request $request)
     {
-        $googleUser = Socialite::driver('google')->user();
+
+        try {
+
+            $googleUser = Socialite::driver('google')->user();
         $user = User::where('email', $googleUser->getEmail());
         if(!$user->exists()){
             if(session('google_bookings_date')){
@@ -50,6 +53,14 @@ class GoogleController extends Controller
             ]);
         }
 
-        return redirect()->route('home');
+        return redirect()->route('home'); 
+
+
+        
+    } catch (\Exception $e) {
+        // Menangani kesalahan dan mengalihkan dengan pesan error
+        return redirect('/')->with('error', 'Failed to login with Google: ' . $e->getMessage());
     }
+
+    } 
 }

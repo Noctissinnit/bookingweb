@@ -28,9 +28,11 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Anjing Sedboi',
             'nis' => '123456',
-            'email' => 'anjingsedboi@gmail.com',
+            'email' => 'bimosatriaji6@gmail.com',
             'password' => bcrypt('password'),
             'role' => 'user'
         ]);
+
+      
     }
 }
