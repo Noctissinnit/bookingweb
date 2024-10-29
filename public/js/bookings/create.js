@@ -115,9 +115,73 @@ function generateCalendar() {
         dateClick: function (info) {
             showBookingHistory(info.date, info.dateStr);
         },
+        events: async function(info, successCallback, failureCallback) {
+            try {
+                // Fetch bookings within the view range
+                const url = new URL(listUrl);
+                url.searchParams.set('start', info.startStr);
+                url.searchParams.set('end', info.endStr);
+                url.searchParams.set('room_id', roomId);
+
+                const bookings = await $.get(url.toString());
+                const events = bookings.map(booking => {
+                    const startTime = booking.start_time.slice(0, 5); // Format to HH:mm
+                    const endTime = booking.end_time.slice(0, 5);     // Format to HH:mm
+                    const title = `${startTime} - ${endTime}: ${booking.description}`;
+                    const color = getRandomColor(); // Assign a random color to each event
+                    return {
+                        title: title,
+                        start: `${booking.date}T${booking.start_time}`,
+                        end: `${booking.date}T${booking.end_time}`,
+                        color: color, // Use random color for background
+                        extendedProps: {
+                            department: booking.department,
+                            description: booking.description,
+                            start_time: startTime,
+                            end_time: endTime,
+                            user_name: booking.user.name,
+                        }
+                    };
+                });
+                
+                successCallback(events);
+            } catch (error) {
+                console.error('Error fetching bookings:', error);
+                failureCallback(error);
+            }
+        },
+        eventClick: function(info) {
+            const booking = info.event.extendedProps;
+            const bookingDetailsHtml = `
+                <p><strong>Booked by:</strong> ${booking.user_name}</p>
+                <p><strong>Department:</strong> ${booking.department}</p>
+                <p><strong>Time:</strong> ${booking.start_time} - ${booking.end_time}</p>
+                <p><strong>Description:</strong> ${booking.description}</p>
+            `;
+            $('#bookingDetailsModal .modal-body').html(bookingDetailsHtml);
+            $('#bookingDetailsModal').modal('show');
+        },
     });
     calendar.render();
 }
+
+// Function to generate a random color
+function getRandomColor() {
+    const colors = [
+        '#FF5733', '#33FF57', '#3357FF', '#FF33A8', '#A833FF', '#FFD133', '#33FFDB'
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// Function to generate a random color
+function getRandomColor() {
+    const colors = [
+        '#FF5733', '#33FF57', '#3357FF', '#FF33A8', '#A833FF', '#FFD133', '#33FFDB'
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+
 
 function isToday(dateString) {
     // Create a Date object from the input string
