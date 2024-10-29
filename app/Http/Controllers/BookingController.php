@@ -97,43 +97,40 @@ class BookingController extends Controller
         $request->session()->remove('google_bookings_room_id');
 
         // Create calendar
-        $client = new GoogleClient();
-        $client->setAccessToken($accessToken);
+        if(config('services.google.calendar_enable')){
+            $client = new GoogleClient();
+            $client->setAccessToken($accessToken);
 
-        $calendarService = new GoogleCalendar($client);
-        $attendees = [];
-        foreach ($booking->users as $user) {
-            $attendees[] = ['email' => $user->email];
-        }
+            $calendarService = new GoogleCalendar($client);
+            $attendees = [];
+            foreach ($booking->users as $user) {
+                $attendees[] = ['email' => $user->email];
+            }
 
-        $event = new Event([
-            'summary' => 'Booking Invitation',
-            'description' => $booking->description,
-            'start' => new EventDateTime([
-                'dateTime' => Carbon::parse($booking->date . ' ' . $booking->start_time),
-                'timeZone' => env('APP_TIMEZONE', 'Asia/Jakarta'),
-            ]),
-            'end' => new EventDateTime([
-                'dateTime' => Carbon::parse($booking->date . ' ' . $booking->end_time),
-                'timeZone' => env('APP_TIMEZONE', 'Asia/Jakarta'),
-            ]),
-            'attendees' => $attendees,
-        ]);
+            $event = new Event([
+                'summary' => 'Booking Invitation',
+                'description' => $booking->description,
+                'start' => new EventDateTime([
+                    'dateTime' => Carbon::parse($booking->date . ' ' . $booking->start_time),
+                    'timeZone' => env('APP_TIMEZONE', 'Asia/Jakarta'),
+                ]),
+                'end' => new EventDateTime([
+                    'dateTime' => Carbon::parse($booking->date . ' ' . $booking->end_time),
+                    'timeZone' => env('APP_TIMEZONE', 'Asia/Jakarta'),
+                ]),
+                'attendees' => $attendees,
+            ]);
 
-        try {
-            $calendarService->events->insert('primary', $event);
-            return response()->json(['success' => 'Event created successfully.']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to create event: ' . $e->getMessage()], 500);
-        }
+            try {
+                $calendarService->events->insert('primary', $event);
+                return response()->json(['success' => 'Event created successfully.']);
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Failed to create event: ' . $e->getMessage()], 500);
+            }
 
-        foreach ($users as $user) {
-            $event->addAttendee(['email' => $user->email]);
-        }
-        $event->save();
-
-        foreach ($users as $user) {
-            Mail::to($user)->send(new InvitationMail($booking, $user));
+            foreach ($users as $user) {
+                Mail::to($user)->send(new InvitationMail($booking, $user));
+            }
         }
 
         return redirect()
