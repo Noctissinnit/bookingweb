@@ -9,7 +9,6 @@ use App\Models\Room;
 use App\Models\User;
 use App\Models\Department;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\InvitationMail;
@@ -17,7 +16,7 @@ use Google\Client as GoogleClient;
 use Google\Service\Calendar as GoogleCalendar;
 use Google\Service\Calendar\Event;
 use Google\Service\Calendar\EventDateTime;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -86,8 +85,12 @@ class BookingController extends Controller
         if ($request->users) $booking->users()->sync($request->users);
         $users = Booking::where('id', $booking->id)->first()->users;
 
+        foreach ($users as $user) {
+            Mail::to($user)->send(new InvitationMail($booking, $user));
+        }
+
         $accessToken = session('google_access_token');
-        if (!$accessToken) {
+        if (config('services.google.calendar_enable') && !$accessToken) {
             return response()->json(['error' => 'No access token found. Please authenticate.'], 401);
         }
 
@@ -126,10 +129,6 @@ class BookingController extends Controller
                 return response()->json(['success' => 'Event created successfully.']);
             } catch (\Exception $e) {
                 return response()->json(['error' => 'Failed to create event: ' . $e->getMessage()], 500);
-            }
-
-            foreach ($users as $user) {
-                Mail::to($user)->send(new InvitationMail($booking, $user));
             }
         }
 

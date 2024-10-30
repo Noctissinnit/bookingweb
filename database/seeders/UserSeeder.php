@@ -54,5 +54,14 @@ class UserSeeder extends Seeder
             'role' => 'user',
             'department_id' => 1,
         ]);
+
+        User::create([
+            'name' => 'Anjing Sedboi',
+            'nis' => '999999',
+            'email' => 'anjingsedboi@gmail.com',
+            'password' => bcrypt('password'),
+            'role' => 'user',
+            'department_id' => 1,
+        ]);
     }
 }
