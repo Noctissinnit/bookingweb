@@ -124,8 +124,12 @@ const googleLoginUrl = "{{ route('google.login') }}";
             </div>
             <div class="modal-body">
                 <div class="form-group">
+                    <label for="date">Tanggal</label>
+                    <input id="form-booking-date" class="form-control" placeholder="Tanggal" readonly/>
+                </div>
+                <div class="form-group">
                     <label for="department">Department</label>
-                    <input id="booking-user-department" class="form-control" placeholder="Department" readonly/>
+                    <input id="booking-user-department" class="form-control" placeholder="Department" value="{{ $user_department->name }}" readonly/>
                 </div>
                 <div class="row form-group">
                     <div class="col">

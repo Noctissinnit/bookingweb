@@ -37,13 +37,14 @@ class GoogleController extends Controller
             $googleUser = Socialite::driver('google')->user();
             $user = User::where('email', $googleUser->getEmail());
             if(!$user->exists()){
-                if(session('google_bookings_date')){
-                    return redirect()->route('bookings.create', ['id' => session('google_bookings_room_id')])->with('error', 'Email user tidak dapat ditemukan di database!');
-                }
+                return redirect()->route(session('google_bookings_date') ? 'bookings.create' : 'home',
+                    ['id' => session('google_bookings_room_id')])
+                    ->with('error', 'Email user tidak dapat ditemukan di database!');
             }
 
             if(session('google_bookings_date')){
                 $request->session()->put('google_access_token', $googleUser->token);
+                $request->session()->put('google_bookings_user_id', $user->first()->id);
                 $request->session()->save();
                 return redirect()->route('bookings.create', [
                     'id' => session('google_bookings_room_id')

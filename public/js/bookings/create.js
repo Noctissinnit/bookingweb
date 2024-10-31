@@ -22,6 +22,8 @@ $(document).ready(() => {
     //     $("#loginModal").modal("show");
     // });
     $('#btn-history-add-booking').click(function(){
+        if(tryGoogleCallback(true)) return;
+
         const url = new URL(googleLoginUrl);
         url.searchParams.set('bookings_room_id', roomId);
         url.searchParams.set('bookings_date', $('#form-booking>input[name="date"]').val());
@@ -90,6 +92,7 @@ async function showBookingHistory(date, dateStr){
     }
 
     $('#form-booking>input[name="date"]').val(dateStr);
+    $('#form-booking-date').val(dateStr);
     $('#btn-history-add-booking').css('display', isAtLeastOneDayLess(date, new Date()) ? 'none' : '');
 
     $('#bookingHistoryModal').modal('show');
@@ -310,11 +313,19 @@ function clearForms(){
     $('#form-booking')[0].reset();
 }
 
-function tryGoogleCallback(){
-    if(!bookingsDate) return;
+function tryGoogleCallback(isLoggedIn = true){
+    if(!bookingsDate) return false;
     
-    $('#form-booking>input[name="date"]').val(bookingsDate);
-    $('#loginModal').modal('show');
+    if(isLoggedIn) {
+        $('#form-booking-date').val($('#form-booking>input[name="date"]').val());
+    } else {
+        $('#form-booking>input[name="date"]').val(bookingsDate);
+        $('#form-booking-date').val(bookingsDate);
+    }
+    $('#bookingHistoryModal').modal('hide');
+    $('#bookingModal').modal('show');
+
+    return true;
 }
 
 setInterval(updateDateTime, 1000);

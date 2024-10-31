@@ -36,8 +36,13 @@ class BookingController extends Controller
         $roomId = $id;
         $room = Room::where('id', $roomId)->first();
         $users = User::all();
-        $departments = Department::all();
-        return view("bookings.create", compact("room", "roomId", "users", 'departments'));
+
+        $user_department = null;
+        if(session('google_bookings_user_id')){
+            $user_department = User::find(session('google_bookings_user_id'))->department;
+        }
+
+        return view("bookings.create", compact("room", "roomId", "users", 'user_department'));
     }
 
     public function login(Request $request)
@@ -59,8 +64,6 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "nis" => "required",
-            "password" => "required",
             "room_id" => "required",
             "date" => "required|date",
             "start_time" => "required",
@@ -68,15 +71,10 @@ class BookingController extends Controller
             "description" => "required",
             "department_id" => "required|numeric",
             "users" => "nullable",
+            "date" => "nullable",
         ]);
 
-        $user = User::where("nis", $request->nis)->first();
-        if ($user === null || !Hash::check($request->password, $user->password)) {
-            return redirect()
-                ->route("bookings.create", $request->room_id)
-                ->with("failed", "Booking gagal ditambahkan.");
-        }
-
+        $user = User::find(session('google_bookings_user_id'));
         $booking = Booking::create(array_merge($request->all('room_id', 'date', 'start_time', 'end_time', 'description', 'department_id'), [
             "user_id" => $user->id,
             // 'approved' => false, // Menunggu approval
@@ -98,6 +96,7 @@ class BookingController extends Controller
         $request->session()->remove('google_access_token');
         $request->session()->remove('google_bookings_date');
         $request->session()->remove('google_bookings_room_id');
+        
 
         // Create calendar
         if(config('services.google.calendar_enable')){
