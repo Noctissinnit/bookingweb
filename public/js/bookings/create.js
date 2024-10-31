@@ -106,15 +106,14 @@ function initTimepickers(){
 }
 
 function generateCalendar() {
-    var calendarEl = document.getElementById("calendar");
+    var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
-        plugins: ["dayGrid", "interaction"],
         headerToolbar: {
             left: "prev,next today",
             center: "title",
-            right: "dayGridMonth",
+            right: $(window).width() > 768 ? 'dayGridMonth' : 'dayGridWeek',
         },
-        initialView: "dayGridMonth",
+        initialView: $(window).width() > 768 ? 'dayGridMonth' : 'dayGridWeek',
         dateClick: function (info) {
             showBookingHistory(info.date, info.dateStr);
         },
