@@ -8,9 +8,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
-const isAuth = @if(Auth::check()) true @else false @endif;
+const isAuth = {{ Auth::check() ? 'true' : 'false' }};
 const roomId = {{ $roomId }};
 const bookingsDate = "{{ session('google_bookings_date') }}";
+const isGoogleCallback = {{ session('google_bookings_user_id') && session('google_bookings_date') && session('google_access_token') ? 'true' : 'false' }};
 
 const listUrl = "{{ route('bookings.list') }}";
 const roomListUrl = "{{ route('rooms.list') }}";

@@ -38,7 +38,7 @@ class BookingController extends Controller
         $users = User::all();
 
         $user_department = null;
-        if(session('google_bookings_user_id')){
+        if(session('google_bookings_user_id') && session('google_bookings_date') && session('google_access_token')){
             $user_department = User::find(session('google_bookings_user_id'))->department;
         }
         $officeMode = false;

@@ -319,7 +319,7 @@ function clearForms(){
 }
 
 function tryGoogleCallback(isLoggedIn = true){
-    if(!bookingsDate) return false;
+    if(!isGoogleCallback) return false;
     
     if(isLoggedIn) {
         $('#form-booking-date').val($('#form-booking>input[name="date"]').val());
