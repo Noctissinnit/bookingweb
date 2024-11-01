@@ -15,12 +15,11 @@ class GoogleController extends Controller
     {
         if($request->has('bookings_date')){
             $request->session()->put('google_bookings_date', $request->bookings_date);
-            $request->session()->save();
         }
         if($request->has('bookings_room_id')){
             $request->session()->put('google_bookings_room_id', $request->bookings_room_id);
-            $request->session()->save();
         }
+        $request->session()->save();
         return Socialite::driver('google')->with([
             'approval_prompt' => config('services.google.approval_prompt'),
             'access_type' => config('services.google.access_type'),
@@ -42,7 +41,7 @@ class GoogleController extends Controller
                     ->with('error', 'Email user tidak dapat ditemukan di database!');
             }
 
-            if(session('google_bookings_date')){
+            if(session('google_bookings_date') && session('google_bookings_room_id')){
                 $request->session()->put('google_access_token', $googleUser->token);
                 $request->session()->put('google_bookings_user_id', $user->first()->id);
                 $request->session()->save();
@@ -51,7 +50,7 @@ class GoogleController extends Controller
                 ]);
             }
 
-            return redirect()->route('home'); 
+            return redirect()->route('bookings.create')->with('error', 'Terjadi kesalahan pada booking! Silahkan buat ulang.'); 
         } catch (\Exception $e) {
             // Menangani kesalahan dan mengalihkan dengan pesan error
             return redirect('/')->with('error', 'Failed to login with Google: ' . $e->getMessage());
