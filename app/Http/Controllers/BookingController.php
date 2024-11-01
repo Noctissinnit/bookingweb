@@ -105,6 +105,7 @@ class BookingController extends Controller
 
             $calendarService = new GoogleCalendar($client);
             $attendees = [];
+            $attendees[] = ['email' => $booking->user->email];
             foreach ($booking->users as $user) {
                 $attendees[] = ['email' => $user->email];
             }
