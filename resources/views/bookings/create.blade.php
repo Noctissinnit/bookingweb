@@ -11,7 +11,8 @@
 const isAuth = {{ Auth::check() ? 'true' : 'false' }};
 const roomId = {{ $roomId }};
 const bookingsDate = "{{ session('google_bookings_date') }}";
-const isGoogleCallback = {{ session('google_bookings_user_id') && session('google_bookings_date') && session('google_access_token') ? 'true' : 'false' }};
+const isGoogleCallback = {{ session('google_bookings_user_id') && session('google_bookings_date')
+ && session('google_access_token') && session('google_bookings_room_id') === $roomId ? 'true' : 'false' }};
 
 const listUrl = "{{ route('bookings.list') }}";
 const roomListUrl = "{{ route('rooms.list') }}";
