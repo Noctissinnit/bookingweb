@@ -34,21 +34,23 @@
     <script src="/js/app.js"></script>
     
     <script>
-        @if ($errors->any())
-            alert({
-                title: "Error",
-                text: "{{ $errors->all()[0] }}",
-                icon: "error"
-            });
-        @endif
+        $(document).ready(() => {
+            @if (session()->has('error'))
+                alert({
+                    title: "Error",
+                    text: "{{ session('error') }}",
+                    icon: "error"
+                });
+            @endif
 
-        @if (session()->has('success'))
-            alert({
-                title: "Berhasil",
-                text: "{{ session('success') }}",
-                icon: "success"
-            });
-        @endif
+            @if (session()->has('success'))
+                alert({
+                    title: "Berhasil",
+                    text: "{{ session('success') }}",
+                    icon: "success"
+                });
+            @endif
+        });
     </script>
 
     @yield('head')
