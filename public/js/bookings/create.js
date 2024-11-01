@@ -87,7 +87,7 @@ async function showBookingHistory(date, dateStr){
         bookingsData.forEach((data, i) => {
             tableBody.append(`
                 <tr>
-                    <td>${data.department}</td>
+                    <td>${data.department.name}</td>
                     <td>${formatTime(data.start_time)}</td>
                     <td>${formatTime(data.end_time)}</td>
                     <td>${data.description}</td>

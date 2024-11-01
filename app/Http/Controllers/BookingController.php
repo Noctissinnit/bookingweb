@@ -22,7 +22,7 @@ class BookingController extends Controller
 {
     public function list(Request $request)
     {
-        $bookings = Booking::with('room')->with('user:id,nis,name');
+        $bookings = Booking::with('room')->with('department')->with('user:id,nis,name');
         if ($request->date) $bookings = $bookings->whereDate('date', $request->date);
         if ($request->room_id) $bookings = $bookings->where('room_id', $request->room_id);
 
@@ -42,12 +42,7 @@ class BookingController extends Controller
             $user_department = User::find(session('google_bookings_user_id'))->department;
         }
 
-        $user_date = null;
-        if(session('google_bookings_date')){
-            $user_date = session('google_bookings_date');
-        }
-
-        return view("bookings.create", compact("room", "roomId", "users", 'user_department', 'user_date'));
+        return view("bookings.create", compact("room", "roomId", "users", 'user_department'));
     }
 
     public function login(Request $request)

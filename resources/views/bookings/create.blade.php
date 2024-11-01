@@ -103,13 +103,11 @@ const googleLoginUrl = "{{ route('google.login') }}";
     <div class="modal-dialog" role="document">
         <form id="form-booking" class="modal-content" action="{{ route('bookings.store') }}" method="POST">
             @csrf
-            <input type="hidden" name="date" value="{{ $user_date }}">
-            <input type="hidden" name="nis">
-            <input type="hidden" name="password">
+            <input type="hidden" name="date" value="{{ session('google_bookings_date') ?? '' }}">
             <input type="hidden" name="nama">
             <input type="hidden" name="email">
-            <input type="hidden" name="room_id">
-            <input type="hidden" name="department_id">
+            <input type="hidden" name="room_id" value="{{ session('google_bookings_room_id') ?? '' }}">
+            <input type="hidden" name="department_id" value="{{ $user_department->id ?? '' }}">
             <div class="modal-header">
                 <h5 class="modal-title" id="bookingModalLabel">Tambah Peminjaman</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -117,7 +115,7 @@ const googleLoginUrl = "{{ route('google.login') }}";
             <div class="modal-body">
                 <div class="form-group">
                     <label for="date">Tanggal</label>
-                    <input id="form-booking-date" class="form-control" value="{{ $user_date }}" readonly/>
+                    <input id="form-booking-date" class="form-control" value="{{ session('google_bookings_date') ?? '' }}" readonly/>
                 </div>
                 <div class="form-group">
                     <label for="department">Department</label>
