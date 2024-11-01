@@ -103,7 +103,7 @@ const googleLoginUrl = "{{ route('google.login') }}";
     <div class="modal-dialog" role="document">
         <form id="form-booking" class="modal-content" action="{{ route('bookings.store') }}" method="POST">
             @csrf
-            <input type="hidden" name="date">
+            <input type="hidden" name="date" value="{{ $user_date }}">
             <input type="hidden" name="nis">
             <input type="hidden" name="password">
             <input type="hidden" name="nama">
@@ -117,11 +117,11 @@ const googleLoginUrl = "{{ route('google.login') }}";
             <div class="modal-body">
                 <div class="form-group">
                     <label for="date">Tanggal</label>
-                    <input id="form-booking-date" class="form-control" placeholder="Tanggal" readonly/>
+                    <input id="form-booking-date" class="form-control" value="{{ $user_date }}" readonly/>
                 </div>
                 <div class="form-group">
                     <label for="department">Department</label>
-                    <input id="booking-user-department" class="form-control" placeholder="Department" value="{{ $user_department->name ?? '' }}" readonly/>
+                    <input id="booking-user-department" class="form-control" value="{{ $user_department->name ?? '' }}" readonly/>
                 </div>
                 <div class="row form-group">
                     <div class="col">

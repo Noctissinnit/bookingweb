@@ -42,7 +42,12 @@ class BookingController extends Controller
             $user_department = User::find(session('google_bookings_user_id'))->department;
         }
 
-        return view("bookings.create", compact("room", "roomId", "users", 'user_department'));
+        $user_date = null;
+        if(session('google_bookings_date')){
+            $user_date = session('google_bookings_date');
+        }
+
+        return view("bookings.create", compact("room", "roomId", "users", 'user_department', 'user_date'));
     }
 
     public function login(Request $request)

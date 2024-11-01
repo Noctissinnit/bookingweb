@@ -50,7 +50,7 @@ class GoogleController extends Controller
                 ]);
             }
 
-            return redirect()->route('bookings.create')->with('error', 'Terjadi kesalahan pada booking! Silahkan buat ulang.'); 
+            return redirect()->route('home')->with('error', 'Terjadi kesalahan pada booking! Silahkan buat ulang.'); 
         } catch (\Exception $e) {
             // Menangani kesalahan dan mengalihkan dengan pesan error
             return redirect('/')->with('error', 'Failed to login with Google: ' . $e->getMessage());
