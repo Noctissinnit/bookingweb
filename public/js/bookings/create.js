@@ -1,5 +1,4 @@
 let isBookingPost = false;
-let isOfficeMode = false;
 
 $(document).ready(() => {
     generateCalendar();

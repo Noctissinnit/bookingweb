@@ -19,6 +19,7 @@ const storeUrl = "{{ route('bookings.store') }}";
 const destroyUrl = "{{ route('bookings.destroy') }}";
 const googleLoginUrl = "{{ route('google.login') }}";
 
+let isOfficeMode = {{ $officeMode ? 'true' : 'false' }};
 </script>
 <script src="/js/bookings/create.js"></script>
 @endsection

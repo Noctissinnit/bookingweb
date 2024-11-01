@@ -31,7 +31,7 @@ class BookingController extends Controller
         return response()->json($bookings);
     }
     // Hanya menampilkan form booking untuk user biasa
-    public function create(int $id)
+    public function create(Request $request, int $id)
     {
         $roomId = $id;
         $room = Room::where('id', $roomId)->first();
@@ -41,8 +41,12 @@ class BookingController extends Controller
         if(session('google_bookings_user_id')){
             $user_department = User::find(session('google_bookings_user_id'))->department;
         }
+        $officeMode = false;
+        if($request->has('office')){
+            $officeMode = true;
+        }
 
-        return view("bookings.create", compact("room", "roomId", "users", 'user_department'));
+        return view("bookings.create", compact("room", "roomId", "users", 'user_department', 'officeMode'));
     }
 
     public function login(Request $request)
