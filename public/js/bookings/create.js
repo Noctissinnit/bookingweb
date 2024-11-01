@@ -1,4 +1,5 @@
 let isBookingPost = false;
+let isOfficeMode = false;
 
 $(document).ready(() => {
     generateCalendar();
@@ -63,6 +64,12 @@ $(document).ready(() => {
     });
     
     $('button[data-bs-dismiss="modal"]').click(clearForms);
+
+    $(document).on('keydown', function(e){
+        if ((e.metaKey || e.ctrlKey) && e.key === 'h') {
+            toggleOfficeMode();
+        }
+    });
 });
 
 async function showBookingHistory(date, dateStr){
@@ -93,7 +100,7 @@ async function showBookingHistory(date, dateStr){
 
     $('#form-booking>input[name="date"]').val(dateStr);
     $('#form-booking-date').val(dateStr);
-    $('#btn-history-add-booking').css('display', isAtLeastOneDayLess(date, new Date()) ? 'none' : '');
+    if(!isOfficeMode) $('#btn-history-add-booking').css('display', isAtLeastOneDayLess(date, new Date()) ? 'none' : '');
 
     $('#bookingHistoryModal').modal('show');
 }
@@ -325,6 +332,14 @@ function tryGoogleCallback(isLoggedIn = true){
     $('#bookingModal').modal('show');
 
     return true;
+}
+
+function toggleOfficeMode(){
+    isOfficeMode = !isOfficeMode;
+
+    if(isOfficeMode){
+        $('#btn-history-add-booking').css('display', 'none');
+    }
 }
 
 setInterval(updateDateTime, 1000);

@@ -65,7 +65,7 @@ const googleLoginUrl = "{{ route('google.login') }}";
                 </table>
             </div>
             <div class="modal-footer">
-                <button id="btn-history-add-booking" class="btn btn-primary text-center" date="">
+                <button id="btn-history-add-booking" class="btn btn-primary text-center" date="" style="display: none;">
                     <img width="28" src="/images/google.webp">
                     <span>Tambah Peminjaman</span>
                 </button>
@@ -121,7 +121,7 @@ const googleLoginUrl = "{{ route('google.login') }}";
                 </div>
                 <div class="form-group">
                     <label for="department">Department</label>
-                    <input id="booking-user-department" class="form-control" placeholder="Department" value="{{ $user_department->name }}" readonly/>
+                    <input id="booking-user-department" class="form-control" placeholder="Department" value="{{ $user_department->name ?? '' }}" readonly/>
                 </div>
                 <div class="row form-group">
                     <div class="col">
