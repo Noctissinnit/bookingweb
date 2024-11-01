@@ -35,7 +35,7 @@ class InvitationMail extends Mailable
     public function generateCalendar(): string
     {
         $booking = $this->booking;
-        $event = Event::create('Booking Invitation ' . $booking->department)
+        $event = Event::create('Booking Invitation ' . $booking->department->name)
             ->startsAt(Carbon::parse($booking->date . ' ' . $booking->start_time))
             ->endsAt(Carbon::parse($booking->date . ' ' . $booking->end_time))
             ->address($booking->room->name)
