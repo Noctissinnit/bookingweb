@@ -21,6 +21,7 @@ const storeUrl = "{{ route('bookings.store') }}";
 const destroyUrl = "{{ route('bookings.destroy') }}";
 const googleLoginUrl = "{{ route('google.login') }}";
 const resetSessionUrl = "{{ route('bookings.reset-session') }}";
+const roomAvailableUrl = "{{ route('bookings.room-available', $roomId) }}";
 
 let isOfficeMode = {{ $officeMode ? 'true' : 'false' }};
 </script>
@@ -33,9 +34,15 @@ let isOfficeMode = {{ $officeMode ? 'true' : 'false' }};
 <div class="container">
     <div class="row">
         <div class="col-md-7 room-card" id="room-status">
-            <div id="current-date"></div>
-            <div id="current-time"></div>
-
+            <div class="row">
+                <div class="col-md-8">
+                    <div id="current-date"></div>
+                    <div id="current-time"></div>
+                </div>
+                <div class="col-md-4">
+                    <div id="current-available">Status: <span id="current-available-status"></span></div>
+                </div>
+            </div>
         </div>
         <div class="col-md-5 room-card">
             <div id="current-bookings">

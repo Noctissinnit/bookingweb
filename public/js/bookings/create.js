@@ -7,6 +7,7 @@ $(document).ready(() => {
     updateBookings();
     clearForms();
     tryGoogleCallback();
+    updateCurrentAvailable();
 
     $("#select-room").select2({
         dropdownParent: $("#bookingModal"),
@@ -352,5 +353,11 @@ async function resetSession(){
     await $.get(resetSessionUrl);
 }
 
+async function updateCurrentAvailable(){
+    const res = await $.get(roomAvailableUrl);
+    $('#current-available-status').html(res.available ? 'Tersedia' : 'Tidak Tersedia');
+}
+
 setInterval(updateDateTime, 1000);
+setInterval(updateCurrentAvailable, 1000);
 setInterval(updateBookings, 5000);

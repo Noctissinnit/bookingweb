@@ -19,6 +19,7 @@ Route::get('/bookings/list', [BookingController::class, 'list'])->name('bookings
 Route::post('/bookings/login', [BookingController::class, 'login'])->name('bookings.login');
 Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
 Route::get('/bookings/reset-session', [BookingController::class, 'resetSession'])->name('bookings.reset-session');
+Route::get('/bookings/available/{roomId}', [BookingController::class, 'roomAvailable'])->name('bookings.room-available');
 
 Route::get('/rooms/list', [RoomController::class, 'list'])->name('rooms.list');
 
