@@ -31,6 +31,7 @@ $(document).ready(() => {
     });
     
     $("#form-login").submit(checkLogin);
+    $('#btn-booking-form-close').click(resetSession);
     $('#form-booking').submit(async e => {
         e.preventDefault();
         if(isBookingPost) return location.reload();
@@ -345,6 +346,10 @@ function toggleOfficeMode(){
     if(isOfficeMode){
         $('#btn-history-add-booking').css('display', 'none');
     }
+}
+
+async function resetSession(){
+    await $.get(resetSessionUrl);
 }
 
 setInterval(updateDateTime, 1000);

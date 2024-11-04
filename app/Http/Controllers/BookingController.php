@@ -49,6 +49,16 @@ class BookingController extends Controller
         return view("bookings.create", compact("room", "roomId", "users", 'user_department', 'officeMode'));
     }
 
+    public function resetSession(Request $request){
+        $request->session()->remove('google_access_token');
+        $request->session()->remove('google_bookings_user_id');
+        $request->session()->remove('google_bookings_date');
+        $request->session()->remove('google_bookings_room_id');
+        $request->session()->save();
+        
+        return response()->json(['success' => true]);
+    }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -98,9 +108,9 @@ class BookingController extends Controller
 
         // Remove all sessions
         $request->session()->remove('google_access_token');
+        $request->session()->remove('google_bookings_user_id');
         $request->session()->remove('google_bookings_date');
         $request->session()->remove('google_bookings_room_id');
-        
 
         // Create calendar
         if(config('services.google.calendar_enable')){

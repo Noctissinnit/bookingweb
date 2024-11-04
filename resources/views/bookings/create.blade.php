@@ -20,6 +20,7 @@ const loginUrl = "{{ route('bookings.login') }}";
 const storeUrl = "{{ route('bookings.store') }}";
 const destroyUrl = "{{ route('bookings.destroy') }}";
 const googleLoginUrl = "{{ route('google.login') }}";
+const resetSessionUrl = "{{ route('bookings.reset-session') }}";
 
 let isOfficeMode = {{ $officeMode ? 'true' : 'false' }};
 </script>
@@ -113,7 +114,7 @@ let isOfficeMode = {{ $officeMode ? 'true' : 'false' }};
             <input type="hidden" name="department_id" value="{{ $user_department->id ?? '' }}">
             <div class="modal-header">
                 <h5 class="modal-title" id="bookingModalLabel">Tambah Peminjaman</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button id="btn-booking-form-close" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
