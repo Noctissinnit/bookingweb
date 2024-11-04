@@ -144,7 +144,7 @@ let isOfficeMode = {{ $officeMode ? 'true' : 'false' }};
                 </div>
                 <div class="form-group">
                     <label for="description" class="font-weight-bold">Description</label>
-                    <textarea class="form-control" name="description" rows="3" required></textarea>
+                    <textarea class="form-control" name="description" rows="3"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
