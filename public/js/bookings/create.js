@@ -360,4 +360,4 @@ async function updateCurrentAvailable(){
 
 setInterval(updateDateTime, 1000);
 setInterval(updateCurrentAvailable, 1000);
-setInterval(updateBookings, 5000);
+setInterval(updateBookings, 1000);
