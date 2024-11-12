@@ -54,8 +54,7 @@
                         <td>{{ substr($booking->end_time, 0, 5)  }}</td>
                         <td>
                             @foreach($booking->users as $user)
-                                {{ $user->name }}
-                                @if(!$loop->last),@endif
+                                {{ $user->name }}@if(!$loop->last), @endif
                             @endforeach
                         </td>
                         {{-- <td>
