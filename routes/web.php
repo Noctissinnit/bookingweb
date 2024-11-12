@@ -50,9 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/rooms/{room}', [RoomController::class, 'update'])->name('rooms.update');
     Route::delete('/admin/rooms/{room}', [RoomController::class, 'destroy'])->name('rooms.destroy');
 
-    // Route untuk Admin untuk melihat dan approve booking
-    Route::get('/admin/bookings', [BookingController::class, 'indexAdmin'])->name('admin.bookings.index');
-    Route::post('/admin/bookings/{id}/approve', [BookingController::class, 'approve'])->name('admin.bookings.approve');
+    Route::get('/admin/bookings/{room}', [BookingController::class, 'indexAdmin'])->name('admin.bookings.index');
+    // Route::post('/admin/bookings/{id}/approve', [BookingController::class, 'approve'])->name('admin.bookings.approve');
     
     Route::get('/bookings/destroy', [BookingController::class, 'destroy'])->name('bookings.destroy');
 });

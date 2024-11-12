@@ -29,8 +29,9 @@
                                 <tr>
                                     <td>{{ $room->name }}</td>
                                     <td class="text-end">
+                                        <a href="{{ route('admin.bookings.index', $room->id) }}"><button class="btn btn-sm btn-primary">Show Bookings</button></a>
                                         <!-- Tombol Edit -->
-                                        <a href="{{ route('rooms.edit', $room->id) }}" class="btn btn-sm btn-primary">
+                                        <a href="{{ route('rooms.edit', $room->id) }}" class="btn btn-sm btn-warning">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
                                         

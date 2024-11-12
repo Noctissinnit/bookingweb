@@ -16,6 +16,7 @@ use Google\Client as GoogleClient;
 use Google\Service\Calendar as GoogleCalendar;
 use Google\Service\Calendar\Event;
 use Google\Service\Calendar\EventDateTime;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
@@ -177,16 +178,18 @@ class BookingController extends Controller
     }
 
     // Menampilkan booking untuk admin
-    public function indexAdmin()
+    public function indexAdmin(Request $request, Room $room)
     {
-        if (Auth::user()->role !== "admin") {
-            return redirect()
-                ->route("home")
-                ->with("error", "Unauthorized access");
+        $bookings = $room->bookings();
+        if($request->has('date')){
+            $bookings = $bookings->where('date', $request->date);
+        } else {
+            $bookings = $bookings->where('date', Carbon::today());
         }
 
-        $bookings = Booking::all();
-        return view("admin.bookings.index", compact("bookings"));
+        $bookings = $bookings->get();
+
+        return view("admin.bookings.index", compact('room', "bookings"));
     }
 
     // Proses approve booking oleh admin
