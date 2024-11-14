@@ -62,8 +62,7 @@ Route::get('login/google/callback', [GoogleController::class, 'handleGoogleCallb
 
 //Route untuk export PDF dan Excel
 
-Route::get('/bookings/export/excel/{room}', [BookingController::class, 'exportExcel'])->name('bookings.export.excel');
-Route::get('/bookings/export/pdf', [BookingController::class, 'downloadPdf'])->name('bookings.export.pdf');
+Route::get('/bookings/export/{room}', [BookingController::class, 'export'])->name('bookings.export');
 
 // use Spatie\GoogleCalendar\Event;
 // use Carbon\Carbon;
