@@ -1,13 +1,11 @@
 <?php
 
-use App\Exports\BookingsExport as ExportsBookingsExport;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\HomeController;
-use App\Http\Exports\BookingsExport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -64,8 +62,8 @@ Route::get('login/google/callback', [GoogleController::class, 'handleGoogleCallb
 
 //Route untuk export PDF dan Excel
 
-Route::get('/bookings/export/excel', [ExportsBookingsExport::class, 'exportExcel'])->name('bookings.export.excel');
-Route::get('/bookings/export/pdf', [ExportsBookingsExport::class, 'downloadPdf'])->name('bookings.export.pdf');
+Route::get('/bookings/export/excel/{room}', [BookingController::class, 'exportExcel'])->name('bookings.export.excel');
+Route::get('/bookings/export/pdf', [BookingController::class, 'downloadPdf'])->name('bookings.export.pdf');
 
 // use Spatie\GoogleCalendar\Event;
 // use Carbon\Carbon;

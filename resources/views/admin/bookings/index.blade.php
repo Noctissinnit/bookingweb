@@ -32,7 +32,7 @@
 
     <div class="d-flex justify-content-end mb-3">
     <!-- Download Buttons -->
-    <a href="{{ route('bookings.export.excel') }}" class="btn btn-success me-2">Download Excel</a>
+    <a href="{{ route('bookings.export.excel', ['room' => $room->id, 'date' => request()->get('date') ]) }}" class="btn btn-success me-2">Download Excel</a>
     <a href="{{ route('bookings.export.pdf') }}" class="btn btn-danger">Download PDF</a>
 </div>
 

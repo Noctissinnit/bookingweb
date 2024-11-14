@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BookingsExport;
 use App\Mail\BookingApprovedMail;
 use Illuminate\Http\Request;
 use App\Models\Booking;
@@ -16,8 +17,9 @@ use Google\Client as GoogleClient;
 use Google\Service\Calendar as GoogleCalendar;
 use Google\Service\Calendar\Event;
 use Google\Service\Calendar\EventDateTime;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BookingController extends Controller
 {
@@ -276,5 +278,37 @@ class BookingController extends Controller
         return redirect()
             ->route("admin.bookings.index")
             ->with("error", "Booking not found.");
+    }
+
+
+    public function downloadPdf(Request $request)
+    {
+        $exportpdf = [
+            'judul' => 'Laporan PDF', // Misalnya, judul laporan
+            'content' => 'Ini adalah isi laporan yang akan dicetak pada PDF.' // Isi laporan
+        ];
+        $exportpdf = Booking::with('users');
+
+        if($request->date){
+            $exportpdf = $exportpdf->where('date', $request->date);
+        }
+        $exportpdf = $exportpdf->get();
+
+        dd($exportpdf);
+
+        // Memuat tampilan 'view.pdf.exportpdf' dengan data exportpdf
+        $pdf = Pdf::loadView('pdf.exportpdf', compact('exportpdf'));
+
+        // Menyediakan PDF untuk diunduh
+        return $pdf->download('laporan.pdf');
+    }
+
+    public function exportExcel(Request $request, Room $room)
+    {
+        $export = new BookingsExport($room);
+        if($request->date){
+            $export->date = $request->date;
+        }
+        return Excel::download($export, 'AtmiBookingRooms.xlsx');
     }
 }
