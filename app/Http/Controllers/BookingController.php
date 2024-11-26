@@ -77,7 +77,8 @@ class BookingController extends Controller
             "password" => ["required"],
         ]);
         $user = User::where("nis", $request->nis)->with('department')->first();
-        $success = $user !== null && Hash::check($request->password, $user->password);
+        // $success = $user !== null && Hash::check($request->password, $user->password);
+        $success = $user !== null && Hash::check($request->password, $user->pin);
 
         return response()->json([
             "success" => $success,
@@ -89,6 +90,8 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'nis' => 'required',
+            'password' => 'required|numeric',
             "room_id" => "required",
             "date" => "required|date",
             "start_time" => "required",
@@ -99,7 +102,13 @@ class BookingController extends Controller
             "date" => "nullable",
         ]);
 
-        $user = User::find(session('google_bookings_user_id'));
+        // $user = User::find(session('google_bookings_user_id'));
+        $user = User::where('nis', $request->nis)->first();
+        $success = $user !== null && Hash::check($request->password, $user->pin);
+        if(!$success){
+            return back()->with('error', 'Failed to validate user');
+        }
+
         $booking = Booking::create(array_merge($request->all('room_id', 'date', 'start_time', 'end_time', 'description', 'department_id'), [
             "user_id" => $user->id,
             // 'approved' => false, // Menunggu approval

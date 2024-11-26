@@ -12,7 +12,7 @@ function validateEmptyForm(form, fields) {
             });
             return false;
         } else {
-            console.error(`Missing key "${key}" on form empty validation. Ignoring...`);
+            console.warn(`Missing key "${key}" on form empty validation. Ignoring...`);
         }
     }
     return true;

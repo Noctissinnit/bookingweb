@@ -77,7 +77,7 @@ let isOfficeMode = {{ $officeMode ? 'true' : 'false' }};
             </div>
             <div class="modal-footer">
                 <button id="btn-history-add-booking" class="btn btn-primary text-center" date="" style="display: none;">
-                    <img width="28" src="/images/google.webp">
+                    {{-- <img width="28" src="/images/google.webp"> --}}
                     <span>Tambah Peminjaman</span>
                 </button>
             </div>
@@ -98,7 +98,7 @@ let isOfficeMode = {{ $officeMode ? 'true' : 'false' }};
                     <input type="text" id="login-nis" class="form-control" placeholder="NIS" required/>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="login-password" class="form-control" placeholder="Password" required/>
+                    <input type="password" id="login-password" class="form-control" placeholder="PIN" maxlength="6" required/>
                 </div>
             </div>
             <div class="modal-footer">
@@ -117,6 +117,8 @@ let isOfficeMode = {{ $officeMode ? 'true' : 'false' }};
             <input type="hidden" name="date" value="{{ session('google_bookings_date') ?? '' }}">
             <input type="hidden" name="nama">
             <input type="hidden" name="email">
+            <input type="hidden" name="nis">
+            <input type="hidden" name="password">
             <input type="hidden" name="room_id" value="{{ session('google_bookings_room_id') ?? '' }}">
             <input type="hidden" name="department_id" value="{{ $user_department->id ?? '' }}">
             <div class="modal-header">

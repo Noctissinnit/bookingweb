@@ -9,14 +9,15 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        if(app()->isProduction()){
+        if (app()->isProduction()) {
             $this->seedAdmin();
         } else {
             $this->seedDummyUsers();
         }
     }
 
-    public function seedAdmin(){
+    public function seedAdmin()
+    {
         User::create([
             'name' => 'Admin Booking Web',
             'nis' => '999999',
@@ -24,10 +25,13 @@ class UserSeeder extends Seeder
             'password' => bcrypt('@!bookingweb123'),
             'role' => 'admin',
             'department_id' => 1,
+            'jabatan_id' => 1,
+            'pin' => bcrypt('123123'),
         ]);
     }
 
-    public function seedDummyUsers(){
+    public function seedDummyUsers()
+    {
         User::create([
             'name' => 'Alvin Dimas',
             'nis' => '111111',
@@ -36,6 +40,7 @@ class UserSeeder extends Seeder
             'role' => 'admin',
             'department_id' => 1,
             'jabatan_id' => 1,
+            'pin' => bcrypt('111111'),
         ]);
 
         User::create([
@@ -46,6 +51,7 @@ class UserSeeder extends Seeder
             'role' => 'admin',
             'department_id' => 1,
             'jabatan_id' => 1,
+            'pin' => bcrypt('111111'),
         ]);
 
         User::create([
@@ -56,6 +62,7 @@ class UserSeeder extends Seeder
             'role' => 'user',
             'department_id' => 1,
             'jabatan_id' => 1,
+            'pin' => bcrypt('111111'),
         ]);
 
         User::create([
@@ -66,6 +73,7 @@ class UserSeeder extends Seeder
             'role' => 'user',
             'department_id' => 1,
             'jabatan_id' => 1,
+            'pin' => bcrypt('111111'),
         ]);
     }
 }

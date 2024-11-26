@@ -23,12 +23,17 @@ $(document).ready(() => {
     //     $("#loginModal").modal("show");
     // });
     $('#btn-history-add-booking').click(function(){
-        if(tryGoogleCallback(true)) return;
+        const today = new Date();
+        $('#form-booking>input[name="date"]').val(today.toISOString().substring(0,10));
+        $('#loginModal').modal('show');
+        $('#bookingHistoryModal').modal('hide');
 
-        const url = new URL(googleLoginUrl);
-        url.searchParams.set('bookings_room_id', roomId);
-        url.searchParams.set('bookings_date', $('#form-booking>input[name="date"]').val());
-        location.href = url.toString();
+        // if(tryGoogleCallback(true)) return;
+
+        // const url = new URL(googleLoginUrl);
+        // url.searchParams.set('bookings_room_id', roomId);
+        // url.searchParams.set('bookings_date', $('#form-booking>input[name="date"]').val());
+        // location.href = url.toString();
     });
     
     $("#form-login").submit(checkLogin);
